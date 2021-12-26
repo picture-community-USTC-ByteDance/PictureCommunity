@@ -1,8 +1,10 @@
 package initialize
 
 import (
-	"github.com/jinzhu/gorm"
+	"picture_community/entity"
 	"picture_community/global"
+
+	"github.com/jinzhu/gorm"
 )
 
 func MysqlDateBaseInit() error {
@@ -10,6 +12,7 @@ func MysqlDateBaseInit() error {
 	if err == nil {
 		db.DB().SetMaxIdleConns(200)
 	}
+	db.AutoMigrate(entity.Post{})
 	global.MYSQL_DB = db
 
 	return err
