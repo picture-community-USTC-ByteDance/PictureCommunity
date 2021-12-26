@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 const (
@@ -10,15 +11,19 @@ const (
 )
 
 type UserClaims struct {
-	ID string `json:"id"`
+	ID int64 `json:"id"`
 	jwt.StandardClaims
 }
 
-func CreateToken(claims UserClaims) (string, error) {
-	// https://gowalker.org/github.com/dgrijalva/jwt-go#Token
-	// 返回一个token的结构体指针
+func CreateToken(id int64) string {
+	claims := UserClaims{id, jwt.StandardClaims{
+		NotBefore: time.Now().Unix() - 1000,       // 签名生效时间
+		ExpiresAt: time.Now().Unix() + 8000000000, // 过期时间 7天  配置文件
+		Issuer:    "thg",                          // 签名的发行者
+	}}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(SignedKey)
+	res, _ := token.SignedString([]byte(SignedKey))
+	return res
 }
 
 func ParserToken(tokenString string) (*UserClaims, error) {
