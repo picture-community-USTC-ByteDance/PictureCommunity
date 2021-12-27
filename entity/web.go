@@ -11,3 +11,9 @@ type CreatePost struct {
 	ImageUrl string `form:"image_url" json:"image_url" binding:"required"`
 	Content  string `form:"content" json:"content" binding:"required"`
 }
+
+type SearchUsers struct {
+	NickName string `form:"nickname"  binding:"required"`
+	PageSize int    `form:"pagesize"  binding:"required"`
+	Page     int    `form:"page"  binding:"required"`
+}
