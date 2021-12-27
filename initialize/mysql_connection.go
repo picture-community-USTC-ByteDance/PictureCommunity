@@ -12,8 +12,10 @@ func MysqlDateBaseInit() error {
 	if err == nil {
 		db.DB().SetMaxIdleConns(200)
 	}
+
 	db.AutoMigrate(&entity.Post{})
 	db.AutoMigrate(&entity.UserDetail{})
+
 	global.MYSQL_DB = db
 
 	return err
