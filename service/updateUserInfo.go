@@ -1,20 +1,25 @@
 package service
 
 import (
+	"fmt"
 	userupdate "picture_community/dao/user"
-	"picture_community/entity"
+	"picture_community/entity/_request"
+	"picture_community/entity/db"
+	"time"
 )
 
-func UpdateUserInfo(parm entity.UpdatePost) (status int, message string) {
+func UpdateUserInfo(parm _request.UpdatePost) (status int, message string) {
+	fmt.Println("contents::", parm.ID, parm.Content)
 
-	newUserDetail := entity.UserDetail{
-		ID:       parm.ID,
-		NickName: parm.Content.Nickname,
-		Sex:      parm.Content.Sex,
-		Birthday: parm.Content.Birthday,
-		Address:  parm.Content.Address,
-		Motto:    parm.Content.Motto,
-		Profile:  parm.Content.Profile,
+	newUserDetail := db.UserDetail{
+		UID:        parm.ID,
+		UpdateDate: time.Now(),
+		Nickname:   parm.Content.Nickname,
+		Sex:        parm.Content.Sex,
+		Birthday:   parm.Content.Birthday,
+		Address:    parm.Content.Address,
+		Motto:      parm.Content.Motto,
+		Profile:    parm.Content.Profile,
 	}
 
 	//_, err := daopost.InsertPostByUserID(newPost)
