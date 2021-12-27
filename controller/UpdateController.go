@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"picture_community/entity/_request"
+	"picture_community/entity"
 	"picture_community/service"
 )
 
 func UpdateUserInfo(c *gin.Context) {
-	var u _request.UpdatePost
+	var u entity.UpdatePost
 
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusOK, gin.H{

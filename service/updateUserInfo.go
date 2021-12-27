@@ -3,16 +3,15 @@ package service
 import (
 	"fmt"
 	userupdate "picture_community/dao/user"
-	"picture_community/entity/_request"
-	"picture_community/entity/db"
+	"picture_community/entity"
 	"time"
 )
 
-func UpdateUserInfo(parm _request.UpdatePost) (status int, message string) {
+func UpdateUserInfo(parm entity.UpdatePost) (status int, message string) {
 	fmt.Println("contents::", parm.ID, parm.Content)
 
-	newUserDetail := db.UserDetail{
-		UID:        parm.ID,
+	newUserDetail := entity.UserDetail{
+		ID:         parm.ID,
 		UpdateDate: time.Now(),
 		Nickname:   parm.Content.Nickname,
 		Sex:        parm.Content.Sex,
