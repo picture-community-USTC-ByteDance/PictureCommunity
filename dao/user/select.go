@@ -1,23 +1,24 @@
 package user
 
 import (
-	"database/sql"
+	"picture_community/entity/db"
 	"picture_community/global"
 )
 
-var db *sql.DB
-
 func QueryIDAndPasswordByUsername(username string) (id int64, password string) {
-	global.MYSQL_DB.DB().QueryRow("select u_id,password from user where username=?", username).Scan(&id, &password)
-	return
+	var user db.User
+	global.MysqlDB.Select("uid", "password").Where("username=?", username).First(&user)
+	return user.UID, user.Password
 }
 
 func QueryIDAndPasswordByEmail(email string) (id int64, password string) {
-	global.MYSQL_DB.DB().QueryRow("select u_id,password from user where email=?", email).Scan(&id, &password)
-	return
+	var user db.User
+	global.MysqlDB.Select("uid", "password").Where("email=?", email).First(&user)
+	return user.UID, user.Password
 }
 
 func QueryIDAndPasswordByTelephone(telephone string) (id int64, password string) {
-	global.MYSQL_DB.DB().QueryRow("select u_id,password from user where telephone=?", telephone).Scan(&id, &password)
-	return
+	var user db.User
+	global.MysqlDB.Select("uid", "password").Where("telephone=?", telephone).First(&user)
+	return user.UID, user.Password
 }

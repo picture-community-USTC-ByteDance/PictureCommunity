@@ -1,12 +1,12 @@
-package login
+package service
 
 import (
 	"picture_community/dao/user"
-	"picture_community/entity"
+	"picture_community/entity/_request"
 	"picture_community/utils"
 )
 
-func VerifyLogin(param entity.LoginUser) (isValid int, message string, token string) {
+func VerifyLogin(param _request.LoginUser) (isValid int, message string, token string) {
 	var id int64
 	var password string
 

@@ -1,14 +1,14 @@
-package login
+package controller
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"picture_community/entity"
-	"picture_community/service/login"
+	"picture_community/entity/_request"
+	"picture_community/service"
 )
 
 func LoginController(c *gin.Context) {
-	var u entity.LoginUser
+	var u _request.LoginUser
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status":  -2,
@@ -17,7 +17,7 @@ func LoginController(c *gin.Context) {
 		})
 		return
 	}
-	status, message, token := login.VerifyLogin(u)
+	status, message, token := service.VerifyLogin(u)
 	c.JSON(http.StatusOK, gin.H{
 		"status":  status,
 		"message": message,
