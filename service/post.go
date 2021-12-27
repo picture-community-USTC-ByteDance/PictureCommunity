@@ -3,15 +3,14 @@ package service
 import (
 	"net/http"
 	"picture_community/dao/post"
-	"picture_community/entity/_request"
-	"picture_community/entity/db"
+	"picture_community/entity"
 	"picture_community/response"
 
 	"github.com/gin-gonic/gin"
 )
 
-func CreatePost(parm _request.CreatePost) response.ResStruct {
-	newPost := db.Post{
+func CreatePost(parm entity.CreatePost) response.ResStruct {
+	newPost := entity.Post{
 		UID:              parm.ID,
 		TitlePhotoUrl:    parm.ImageUrl,
 		Content:          parm.Content,
