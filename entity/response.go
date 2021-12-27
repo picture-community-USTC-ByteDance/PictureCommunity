@@ -1,8 +1,8 @@
 package entity
 
 type ResponseSearchUsers struct {
-	Profile  string
-	Username string
-	NickName string
-	Motto    string
+	Profile  string `json:"profile"`
+	UserName string `json:"username"`
+	NickName string `json:"nickname"`
+	Motto    string `json:"motto"`
 }
