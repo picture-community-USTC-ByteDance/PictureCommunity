@@ -10,7 +10,7 @@ import (
 )
 
 func SearchService(keywords string, pageSize int, page int) response.ResStruct {
-	var searchUsers []entity.SearchUsers
+	var searchUsers []entity.ResponseSearchUsers
 	var count int
 
 	global.MYSQL_DB.Offset((page-1)*pageSize).Limit(pageSize).Model(entity.User{}).
