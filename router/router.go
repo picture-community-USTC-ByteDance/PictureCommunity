@@ -12,6 +12,7 @@ func SetRouter() {
 	g := r.Group("/user")
 	{
 		g.POST("/login", controller.LoginController)
+		g.POST("/update", controller.UpdateUserInfo)
 	}
 	p := r.Group("/post")
 	{
