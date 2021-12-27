@@ -6,12 +6,13 @@ import (
 
 //用户
 type User struct {
-	ID        int64  `db: u_id`
-	Username  string `db: username`
-	Password  string `db: password`
-	Telephone string `db: telephone`
-	Email     string `db: email`
-	Status    int8   `db: status`
+	ID           int64     `db: u_id`
+	Username     string    `db: username`
+	Password     string    `db: password`
+	Telephone    int       `db: telephone`
+	Email        string    `db: email`
+	Status       int8      `db: status`
+	RegisterDate time.Time `gorm:"register_date"`
 }
 
 type Post struct {
@@ -26,4 +27,15 @@ type Post struct {
 	CollectionNumber int
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
+}
+
+type UserDetail struct {
+	ID         int64 `gorm:"u_id"`
+	Nickname   string
+	Sex        bool
+	UpdateDate time.Time `gorm:"update_date"`
+	Birthday   time.Time
+	Address    string
+	Motto      string
+	Profile    string
 }
