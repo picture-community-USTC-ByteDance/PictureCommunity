@@ -12,10 +12,13 @@ func CreatePostController(c *gin.Context) {
 	var u entity.CreatePost
 	err := c.ShouldBind(&u)
 	if err != nil {
-		response.Fail(c, nil, "Invalid parameter")
+		response.CheckFail(c, nil, "Invalid parameter")
 		return
 	}
-
+	if !VerifyIDByToken(u.ID, u.Token) {
+		response.CheckFail(c, nil, "Invalid Token")
+		return
+	}
 	res := service.CreatePost(u)
 	response.HandleResponse(c, res)
 }
