@@ -12,14 +12,14 @@ func UpdateUserInfo(parm _request.UpdatePost) (status int, message string) {
 	fmt.Println("contents::", parm.ID, parm.Content)
 
 	newUserDetail := db.UserDetail{
-		UID:       parm.ID,
-		UpdatedAt: time.Now(),
-		NickName:  parm.Content.NickName,
-		Sex:       parm.Content.Sex,
-		Birthday:  parm.Content.Birthday,
-		Address:   parm.Content.Address,
-		Motto:     parm.Content.Motto,
-		Profile:   parm.Content.Profile,
+		UID:        parm.ID,
+		UpdateDate: time.Now(),
+		Nickname:   parm.Content.Nickname,
+		Sex:        parm.Content.Sex,
+		Birthday:   parm.Content.Birthday,
+		Address:    parm.Content.Address,
+		Motto:      parm.Content.Motto,
+		Profile:    parm.Content.Profile,
 	}
 
 	//_, err := daopost.InsertPostByUserID(newPost)
