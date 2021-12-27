@@ -4,17 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"math"
 	"net/http"
-	"picture_community/entity/_response"
-	"picture_community/entity/db"
+	"picture_community/entity"
 	"picture_community/global"
 	"picture_community/response"
 )
 
 func SearchService(keywords string, pageSize int, page int) response.ResStruct {
-	var searchUsers []_response.ResponseSearchUsers
-	var count int64
+	var searchUsers []entity.ResponseSearchUsers
+	var count int
 
-	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.User{}).
+	global.MYSQL_DB.Offset((page-1)*pageSize).Limit(pageSize).Model(entity.User{}).
 		Select("profile,username,nickname,motto").
 		Joins("inner join csm_detail on consumer.u_id = csm_detail.u_id").
 		Where("nickname like ?", keywords).Count(&count).Scan(&searchUsers)
@@ -27,7 +26,7 @@ func SearchService(keywords string, pageSize int, page int) response.ResStruct {
 		}
 	}
 
-	totalPage := math.Ceil(float64(int(count) / pageSize))
+	totalPage := math.Ceil(float64(count / pageSize))
 
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
