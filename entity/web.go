@@ -27,7 +27,7 @@ type UpdatePost struct {
 }
 type UserInfo struct {
 	Nickname  string    `json:"nickname"`
-	Sex       bool      `json:"sex"`
+	Sex       int8      `json:"sex"`
 	Motto     string    `json:"motto"`
 	Email     string    `json:"email"`
 	Telephone int       `json:"telephone"`
