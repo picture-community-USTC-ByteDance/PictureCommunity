@@ -1,15 +1,14 @@
 package controller
 
 import (
-	"picture_community/entity"
+	"github.com/gin-gonic/gin"
+	"picture_community/entity/_request"
 	"picture_community/response"
 	"picture_community/service"
-
-	"github.com/gin-gonic/gin"
 )
 
 func CreatePostController(c *gin.Context) {
-	var u entity.CreatePost
+	var u _request.CreatePost
 	err := c.ShouldBind(&u)
 	if err != nil {
 		response.CheckFail(c, nil, "Invalid parameter")

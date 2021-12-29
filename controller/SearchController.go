@@ -13,11 +13,9 @@ func Search(c *gin.Context) {
 
 	if err := c.ShouldBind(&u); err != nil {
 		response.Fail(c, nil, "请求错误")
-		return
 	}
 	if u.Page <= 0 || u.PageSize <= 0 {
 		response.CheckFail(c, nil, "页码或数量有误")
-		return
 	}
 	/*支持多个关键词搜索，关键词用空格隔开*/
 	keywords := "%" + strings.Replace(u.NickName, " ", "%", -1) + "%"
