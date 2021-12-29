@@ -1,4 +1,4 @@
-package entity
+package _response
 
 type ResponseSearchUsers struct {
 	Profile  string `json:"profile"`
