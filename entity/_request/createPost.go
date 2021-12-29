@@ -6,9 +6,3 @@ type CreatePost struct {
 	Content  string `form:"content" json:"content" binding:"required"`
 	Token    string `form:"token" json:"token" binding:"required"`
 }
-
-type SearchUsers struct {
-	NickName string `form:"nickname"  binding:"required"`
-	PageSize int    `form:"pagesize"  binding:"required"`
-	Page     int    `form:"page"  binding:"required"`
-}
