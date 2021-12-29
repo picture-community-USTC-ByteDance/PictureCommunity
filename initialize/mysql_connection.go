@@ -1,20 +1,20 @@
 package initialize
 
 import (
-	"picture_community/entity"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"picture_community/entity/db"
 	"picture_community/global"
-
-	"github.com/jinzhu/gorm"
 )
 
 func MysqlDateBaseInit() error {
-	db, err := gorm.Open("mysql", global.DbUrl)
-	if err == nil {
-		db.DB().SetMaxIdleConns(200)
-	}
-	db.AutoMigrate(entity.Post{})
-	db.AutoMigrate(&entity.Follow{})
-	global.MYSQL_DB = db
+	database, err := gorm.Open(mysql.Open(global.DbUrl), &gorm.Config{})
+
+	database.AutoMigrate(&db.Post{})
+	database.AutoMigrate(&db.UserDetail{})
+	database.AutoMigrate(&db.Follow{})
+	database.AutoMigrate(&db.Fans{})
+	global.MysqlDB = database
 
 	return err
 }

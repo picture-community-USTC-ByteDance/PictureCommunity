@@ -8,7 +8,7 @@ import (
 
 func RunSystemWithGIN() {
 	r := gin.Default()
-	global.GinEngin = r
+	global.GinEngine = r
 	router.SetRouter()
 	r.Run(":8080")
 }
