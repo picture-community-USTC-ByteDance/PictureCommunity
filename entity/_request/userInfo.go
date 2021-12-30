@@ -3,8 +3,8 @@ package _request
 import "time"
 
 type UserInfo struct {
-	Nickname  string    `json:"nickname"`
-	Sex       bool      `json:"sex"`
+	NickName  string    `json:"nickname"`
+	Sex       int8      `json:"sex"`
 	Motto     string    `json:"motto"`
 	Email     string    `json:"email"`
 	Telephone int       `json:"telephone"`
