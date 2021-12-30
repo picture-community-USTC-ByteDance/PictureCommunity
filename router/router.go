@@ -3,6 +3,7 @@ package router
 import (
 	"picture_community/controller"
 	"picture_community/global"
+	"picture_community/middleware"
 )
 
 func SetRouter() {
@@ -14,7 +15,7 @@ func SetRouter() {
 		g.POST("/login", controller.LoginController)
 	}
 	p := r.Group("/post")
-	{
-		p.POST("/create", controller.CreatePostController)
+	{ //p.Use(middleware.AuthMiddleware())
+		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
 	}
 }
