@@ -16,7 +16,7 @@ func SearchService(keywords string, pageSize int, page int) response.ResStruct {
 
 	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.User{}).
 		Select("profile,username,nickname,motto").
-		Joins("inner join csm_detail on consumer.u_id = csm_detail.u_id").
+		Joins("inner join csm_detail on user.id = user_detail.id").
 		Where("nickname like ?", keywords).Count(&count).Scan(&searchUsers)
 	if count == 0 {
 		return response.ResStruct{

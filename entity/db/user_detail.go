@@ -1,14 +1,18 @@
 package db
 
-import "time"
+import (
+	"time"
+)
 
 type UserDetail struct {
-	UID        int64 `gorm:"primaryKey"`
-	Nickname   string
-	Sex        bool
-	UpdateDate time.Time
-	Birthday   time.Time
-	Address    string
-	Motto      string
-	Profile    string
+	UID           uint
+	Nickname      string
+	Sex           bool //false为女  true为男
+	Birthday      time.Time
+	Address       string
+	Motto         string
+	Profile       string    //略缩图
+	OriginProfile string    //详细头像url
+	UpdateTime    time.Time `gorm:"autoUpdateTime:milli"`
+	CreateTime    time.Time `gorm:"autoCreateTime:milli"`
 }
