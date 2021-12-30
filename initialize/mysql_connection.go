@@ -12,6 +12,8 @@ func MysqlDateBaseInit() error {
 
 	database.AutoMigrate(&db.Post{})
 	database.AutoMigrate(&db.UserDetail{})
+	database.AutoMigrate(&db.Follow{})
+	database.AutoMigrate(&db.Fans{})
 	global.MysqlDB = database
 
 	return err
