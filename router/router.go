@@ -3,6 +3,7 @@ package router
 import (
 	"picture_community/controller"
 	"picture_community/global"
+	"picture_community/middleware"
 )
 
 func SetRouter() {
@@ -15,6 +16,8 @@ func SetRouter() {
 	}
 	p := r.Group("/post")
 	{
+		p.Use(middleware.AuthMiddleware()) //认证是否登录,
+
 		p.POST("/create", controller.CreatePostController)
 	}
 }
