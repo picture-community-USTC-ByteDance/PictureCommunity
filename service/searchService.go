@@ -12,12 +12,13 @@ import (
 
 func SearchService(keywords string, pageSize int, page int) response.ResStruct {
 	var searchUsers []_request.SearchUsers
-	var count int64
 
-	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.User{}).
+	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.UserDetail{}).
 		Select("profile,username,nickname,motto").
-		Joins("inner join csm_detail on user.id = user_detail.id").
-		Where("nickname like ?", keywords).Count(&count).Scan(&searchUsers)
+		Joins("inner join user on user.uid = user_detail.uid").
+		Where("nickname like ?", keywords).Scan(&searchUsers)
+
+	count := len(searchUsers)
 	if count == 0 {
 		return response.ResStruct{
 			HttpStatus: http.StatusBadRequest,
@@ -27,7 +28,7 @@ func SearchService(keywords string, pageSize int, page int) response.ResStruct {
 		}
 	}
 
-	totalPage := math.Ceil(float64(int(count) / pageSize))
+	totalPage := math.Ceil(float64(count) / float64(pageSize))
 
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,

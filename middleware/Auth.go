@@ -3,8 +3,6 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"picture_community/entity/db"
-	"picture_community/global"
 	"picture_community/utils"
 	"strings"
 )
@@ -38,11 +36,11 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		//验证通过后，token获取userID
 		userId := claims.ID
-		var user db.User
-		global.MysqlDB.First(&user, userId)
+		//var user db.User
+		//global.MysqlDB.First(&user, userId)
 
 		//没找到用户
-		if user.UID == 0 {
+		if userId == 0 {
 			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "请先登录"})
 			//抛弃请求
 			ctx.Abort()
@@ -50,7 +48,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		//如果用户存在，将用户信息写入上下文,其他需要登录才能使用的api可用user,_:=ctx.Get(user)
-		ctx.Set("user", user)
+		ctx.Set("uid", userId)
+		//ctx.Set("user", user)
 		ctx.Next()
 	}
 }
