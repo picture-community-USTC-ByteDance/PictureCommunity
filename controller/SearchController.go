@@ -2,14 +2,14 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
-	"picture_community/entity"
+	"picture_community/entity/_request"
 	"picture_community/response"
 	"picture_community/service"
 	"strings"
 )
 
 func Search(c *gin.Context) {
-	var u entity.SearchUsers
+	var u _request.SearchUsers
 
 	if err := c.ShouldBind(&u); err != nil {
 		response.Fail(c, nil, "请求错误")

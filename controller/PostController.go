@@ -14,10 +14,10 @@ func CreatePostController(c *gin.Context) {
 		response.CheckFail(c, nil, "Invalid parameter")
 		return
 	}
-	if !VerifyIDByToken(u.ID, u.Token) {
-		response.CheckFail(c, nil, "Invalid Token")
-		return
-	}
+	//if !VerifyIDByToken(u.ID, u.Token) {
+	//	response.CheckFail(c, nil, "Invalid Token")
+	//	return
+	//}
 	res := service.CreatePost(u)
 	response.HandleResponse(c, res)
 }
