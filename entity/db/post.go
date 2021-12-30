@@ -1,17 +1,19 @@
 package db
 
-import "time"
+import (
+	"time"
+)
 
 type Post struct {
-	PID              int64 `gorm:"primaryKey"`
-	UID              int64
-	PhotoNumber      uint
+	PID              uint `gorm:"primaryKey"`
+	UID              uint
+	PhotoNumber      int
 	Content          string `gorm:"size:400"`
-	TitlePhotoUrl    string `gorm:"size:1000"`
+	TitlePhotoUrl    string `gorm:"size:80"`
 	CommentNumber    int
 	ForwardNumber    int
 	LikeNumber       int
 	CollectionNumber int
-	CreatedAt        time.Time
-	UpdatedAt        time.Time
+	UpdateTime       time.Time `gorm:"autoUpdateTime:milli"`
+	CreateTime       time.Time `gorm:"autoCreateTime:milli"`
 }

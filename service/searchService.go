@@ -4,21 +4,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"math"
 	"net/http"
-	"picture_community/entity/_response"
+	"picture_community/entity/_request"
 	"picture_community/entity/db"
 	"picture_community/global"
 	"picture_community/response"
 )
 
 func SearchService(keywords string, pageSize int, page int) response.ResStruct {
-	var searchUsers []_response.ResponseSearchUsers
+	var searchUsers []_request.SearchUsers
+	var count int64
 
-	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.UserDetail{}).
-		Select("profile,user_name,nick_name,motto").
-		Joins("inner join users on user_details.uid = users.uid").
-		Where("nick_name like ?", keywords).Scan(&searchUsers)
-
-	count := len(searchUsers)
+	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.User{}).
+		Select("profile,username,nickname,motto").
+		Joins("inner join csm_detail on user.id = user_detail.id").
+		Where("nickname like ?", keywords).Count(&count).Scan(&searchUsers)
 	if count == 0 {
 		return response.ResStruct{
 			HttpStatus: http.StatusBadRequest,
@@ -28,7 +27,7 @@ func SearchService(keywords string, pageSize int, page int) response.ResStruct {
 		}
 	}
 
-	totalPage := math.Ceil(float64(count) / float64(pageSize))
+	totalPage := math.Ceil(float64(int(count) / pageSize))
 
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
