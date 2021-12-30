@@ -12,7 +12,7 @@ import (
 
 func CreatePost(parm _request.CreatePost) response.ResStruct {
 	newPost := db.Post{
-		UID:              parm.ID,
+		UID:              uint(parm.ID),
 		TitlePhotoUrl:    parm.ImageUrl,
 		Content:          parm.Content,
 		PhotoNumber:      1,

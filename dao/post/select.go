@@ -9,5 +9,5 @@ import (
 func InsertPostByUserID(newPost db.Post) (int64, error) {
 	fmt.Println(newPost.TitlePhotoUrl)
 	err := global.MysqlDB.Create(&newPost).Error
-	return newPost.UID, err
+	return int64(newPost.UID), err
 }
