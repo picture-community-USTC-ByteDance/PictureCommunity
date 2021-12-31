@@ -15,9 +15,7 @@ func SetRouter() {
 		g.POST("/login", controller.LoginController)
 	}
 	p := r.Group("/post")
-	{
-		p.Use(middleware.AuthMiddleware()) //认证是否登录,
-
-		p.POST("/create", controller.CreatePostController)
+	{ //p.Use(middleware.AuthMiddleware())
+		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
 	}
 }

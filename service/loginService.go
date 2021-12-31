@@ -6,12 +6,12 @@ import (
 	"picture_community/utils"
 )
 
-func VerifyLogin(param _request.LoginUser) (isValid int, message string, token string) {
+func VerifyLogin(param _request.LoginUser) (isValid bool, message string, token string) {
 	var id int64
 	var password string
 
 	message = "密码错误"
-	isValid = -1
+	isValid = false
 	token = ""
 
 	switch param.Method {
@@ -26,7 +26,7 @@ func VerifyLogin(param _request.LoginUser) (isValid int, message string, token s
 		return
 	}
 	if password != "" && password == param.Password {
-		isValid = 0
+		isValid = true
 		message = "登录成功"
 		token, _ = utils.CreateToken(id)
 	}
