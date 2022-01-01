@@ -2,11 +2,11 @@ package db
 
 import "time"
 
-type Fans struct {
+type Collection struct {
 	ID         uint `gorm:"primaryKey;autoIncrement"`
 	UID        uint
-	FansID     uint
-	state      bool      //true为fansID是UID的粉丝
+	PID        uint
+	state      bool
 	UpdateTime time.Time `gorm:"autoUpdateTime:milli"`
 	CreateTime time.Time `gorm:"autoCreateTime:milli"`
 }
