@@ -2,9 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
+	"time"
 )
 
 const (
@@ -32,7 +31,7 @@ func CreateToken(id int64) (string, error) {
 
 func ParserToken(tokenString string) (*UserClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(SignedKey), nil
+		return SignedKey, nil
 	})
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
