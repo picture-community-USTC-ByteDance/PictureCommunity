@@ -22,3 +22,9 @@ func QueryIDAndPasswordByTelephone(telephone string) (id int64, password string)
 	global.MysqlDB.Select("id", "password").Where("telephone=?", telephone).First(&user)
 	return int64(user.UID), user.Password
 }
+
+func QueryUserData(uid int) {
+	var user_data db.UserData
+	global.MysqlDB.Where("uid=?", uid).First(&user_data)
+
+}

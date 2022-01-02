@@ -18,4 +18,9 @@ func SetRouter() {
 	{ //p.Use(middleware.AuthMiddleware())
 		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
 	}
+	q := r.Group("/query")
+	{
+		q.GET("/userData", middleware.AuthMiddleware(), controller.QueryUserData)
+		q.GET("/userDetail", middleware.AuthMiddleware(), controller.QueryUserDetail)
+	}
 }
