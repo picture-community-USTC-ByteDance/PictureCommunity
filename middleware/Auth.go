@@ -47,7 +47,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		//如果用户存在，将用户信息写入上下文,其他需要登录才能使用的api可用user,_:=ctx.Get(user)
+		//如果用户存在，将用户信息写入上下文,其他需要登录才能使用的api可用user,_:=ctx.Get("uid")
 		ctx.Set("uid", userId)
 		//ctx.Set("user", user)
 		ctx.Next()
