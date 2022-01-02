@@ -9,7 +9,7 @@ import (
 func SetRouter() {
 	r := global.GinEngine
 
-	r.GET("/search", controller.Search)
+	r.GET("/search", controller.SearchUsers)
 	g := r.Group("/user")
 	{
 		g.POST("/login", controller.LoginController)

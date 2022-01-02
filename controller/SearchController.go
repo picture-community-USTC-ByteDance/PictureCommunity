@@ -5,10 +5,9 @@ import (
 	"picture_community/entity/_request"
 	"picture_community/response"
 	"picture_community/service"
-	"strings"
 )
 
-func Search(c *gin.Context) {
+func SearchUsers(c *gin.Context) {
 	var u _request.SearchUsers
 
 	if err := c.ShouldBind(&u); err != nil {
@@ -17,10 +16,13 @@ func Search(c *gin.Context) {
 	if u.Page <= 0 || u.PageSize <= 0 {
 		response.CheckFail(c, nil, "页码或数量有误")
 	}
-	/*支持多个关键词搜索，关键词用空格隔开*/
-	keywords := "%" + strings.Replace(u.NickName, " ", "%", -1) + "%"
 
-	res := service.SearchService(keywords, u.PageSize, u.Page)
+	count, totalPage, searchUsers := service.SearchService(u)
 
-	response.HandleResponse(c, res)
+	if count == 0 {
+		response.Success(c, nil, "搜索用户不存在")
+	} else {
+		response.Success(c, gin.H{"totalpage": totalPage, "searchusers": searchUsers}, "ok")
+	}
+
 }
