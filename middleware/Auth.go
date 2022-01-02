@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
+	"picture_community/response"
 	"picture_community/utils"
 	"strings"
 )
@@ -19,37 +19,22 @@ func AuthMiddleware() gin.HandlerFunc {
 		//获取Authorization，header
 		tokenString := ctx.GetHeader("Authorization")
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "请先登录"})
+			response.UnAuthorization(ctx, nil, "请先登录")
 			//抛弃请求
 			ctx.Abort()
 			return
 		}
 		//"Bearer "占了7位
 		tokenString = tokenString[7:]
-		token, claims, err := utils.ParseToken(tokenString)
-		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "请先登录"})
+		claims, err := utils.ParserToken(tokenString)
+		if err != nil {
+			response.UnAuthorization(ctx, nil, err.Error())
 			//抛弃请求
 			ctx.Abort()
 			return
 		}
-
-		//验证通过后，token获取userID
 		userId := claims.ID
-		//var user db.User
-		//global.MysqlDB.First(&user, userId)
-
-		//没找到用户
-		if userId == 0 {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "请先登录"})
-			//抛弃请求
-			ctx.Abort()
-			return
-		}
-
-		//如果用户存在，将用户信息写入上下文,其他需要登录才能使用的api可用user,_:=ctx.Get(user)
 		ctx.Set("uid", userId)
-		//ctx.Set("user", user)
 		ctx.Next()
 	}
 }

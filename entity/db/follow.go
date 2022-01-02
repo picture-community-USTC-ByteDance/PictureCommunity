@@ -3,6 +3,7 @@ package db
 import "time"
 
 type Follow struct {
+	ID         uint `gorm:"primaryKey;autoIncrement"`
 	UID        uint
 	FollowedID uint
 	state      bool      //true为已关注

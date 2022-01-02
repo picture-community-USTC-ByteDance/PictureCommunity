@@ -3,6 +3,7 @@ package db
 import "time"
 
 type Liked struct {
+	ID           uint `gorm:"primaryKey;autoIncrement"`
 	ToLikePostID uint
 	FromUserID   uint
 	State        bool
