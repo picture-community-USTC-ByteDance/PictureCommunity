@@ -11,5 +11,6 @@ func main() {
 		fmt.Printf("database error : %v\n", err)
 		return
 	}
+	initialize.IdGeneratorInitialize()
 	initialize.RunSystemWithGIN()
 }
