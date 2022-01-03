@@ -1,11 +1,12 @@
 package initialize
 
 import (
+	"picture_community/entity/db"
+	"picture_community/global"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"picture_community/entity/db"
-	"picture_community/global"
 )
 
 func MysqlDateBaseInit() error {

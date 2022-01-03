@@ -1,6 +1,7 @@
 package router
 
 import (
+	"net/http"
 	"picture_community/controller"
 	"picture_community/global"
 	"picture_community/middleware"
@@ -15,7 +16,8 @@ func SetRouter() {
 		g.POST("/login", controller.LoginController)
 	}
 	p := r.Group("/post")
-	{ //p.Use(middleware.AuthMiddleware())
+	{
 		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
 	}
+	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 }
