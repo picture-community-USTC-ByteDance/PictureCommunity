@@ -5,20 +5,20 @@ import (
 	"picture_community/global"
 )
 
-func QueryIDAndPasswordByUsername(username string) (id int64, password string) {
+func QueryIDAndPasswordByUsername(username string) (int64, string, error) {
 	var user db.User
-	global.MysqlDB.Select("uid", "password").Where("username=?", username).First(&user)
-	return int64(user.UID), user.Password
+	err := global.MysqlDB.Select("uid", "password").Where("username=?", username).First(&user).Error
+	return int64(user.UID), user.Password, err
 }
 
-func QueryIDAndPasswordByEmail(email string) (id int64, password string) {
+func QueryIDAndPasswordByEmail(email string) (int64, string, error) {
 	var user db.User
-	global.MysqlDB.Select("uid", "password").Where("email=?", email).First(&user)
-	return int64(user.UID), user.Password
+	err := global.MysqlDB.Select("uid", "password").Where("email=?", email).First(&user).Error
+	return int64(user.UID), user.Password, err
 }
 
-func QueryIDAndPasswordByTelephone(telephone string) (id int64, password string) {
+func QueryIDAndPasswordByTelephone(telephone string) (int64, string, error) {
 	var user db.User
-	global.MysqlDB.Select("uid", "password").Where("telephone=?", telephone).First(&user)
-	return int64(user.UID), user.Password
+	err := global.MysqlDB.Select("uid", "password").Where("telephone=?", telephone).First(&user).Error
+	return int64(user.UID), user.Password, err
 }
