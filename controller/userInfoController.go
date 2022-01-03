@@ -1,30 +1,25 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"picture_community/entity/_request"
 	"picture_community/response"
 	"picture_community/service"
 )
 
-func UpdateUserInfo(c *gin.Context) {
-	var u _request.UpdatePost
+func UpdateUserController(c *gin.Context) {
+	var u _request.UpdateUserDetail
 
 	if err := c.ShouldBind(&u); err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"status":  -2,
-			"message": err.Error(),
-		})
-		return
+		response.CheckFail(c, nil, "更新用户信息参数错误")
 	}
-	fmt.Println("controller: ", u.ID, u.Content)
-	status, message := service.UpdateUserInfo(u)
-	c.JSON(http.StatusOK, gin.H{
-		"status":  status,
-		"message": message,
-	})
+	uid, _ := c.Get("uid")
+	isOK, message := service.UpdateUserDetailService(u, uid.(uint))
+	if isOK {
+		response.Success(c, nil, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
 }
 
 func EmailIsUniqueController(c *gin.Context) {
@@ -34,7 +29,7 @@ func EmailIsUniqueController(c *gin.Context) {
 		return
 	}
 
-	isOK, message := service.EmailIsUnique(u)
+	isOK, message := service.EmailIsUniqueService(u)
 	if isOK {
 		response.Success(c, nil, message)
 	} else {
@@ -50,7 +45,7 @@ func TelephoneIsUniqueController(c *gin.Context) {
 		return
 	}
 
-	isOK, message := service.TelephoneIsUnique(u)
+	isOK, message := service.TelephoneIsUniqueService(u)
 	if isOK {
 		response.Success(c, nil, message)
 	} else {

@@ -29,7 +29,7 @@ func UsernameIsUniqueController(c *gin.Context) {
 		return
 	}
 
-	isOK, message := service.UsernameIsUnique(u)
+	isOK, message := service.UsernameIsUniqueService(u)
 	if isOK {
 		response.Success(c, nil, message)
 	} else {
