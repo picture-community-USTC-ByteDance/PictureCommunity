@@ -16,7 +16,7 @@ func SetRouter() {
 		g.POST("/login", controller.LoginController)
 	}
 	p := r.Group("/post")
-	{
+	{ //p.Use(middleware.AuthMiddleware())
 		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
 	}
 	l := r.Group("/like")
@@ -26,5 +26,8 @@ func SetRouter() {
 		l.POST("/cancel", middleware.AuthMiddleware(), controller.CancelLikeController)
 	}
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
+
+
+	r.GET("/token", controller.GetToken)
 
 }
