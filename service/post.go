@@ -22,7 +22,8 @@ const (
 func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content string) response.ResStruct {
 	utils.PathExists(StorageLocation)
 
-	file.Filename = strconv.FormatUint(uint64(id), 10) + strconv.FormatInt(time.Now().Unix(), 10) + utils.RandStr(20)
+	filesuffix := path.Ext(file.Filename)
+	file.Filename = strconv.FormatUint(uint64(id), 10) + strconv.FormatInt(time.Now().Unix(), 10) + utils.RandStr(20) + filesuffix
 	dst := path.Join(StorageLocation, file.Filename)
 	err := c.SaveUploadedFile(file, dst)
 	if err != nil {
