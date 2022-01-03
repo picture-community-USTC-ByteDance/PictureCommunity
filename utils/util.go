@@ -26,3 +26,7 @@ func RandStr(length int) string {
 	}
 	return string(result)
 }
+
+func GetDbUrl() string {
+	return os.Getenv("DbUrl")
+}
