@@ -28,7 +28,7 @@ func VerifyLogin(param _request.LoginUser) (isValid bool, message string, token 
 	if password != "" && password == param.Password {
 		isValid = true
 		message = "登录成功"
-		token, _ = utils.CreateToken(id)
+		token = utils.CreateToken(id)
 	}
 	return
 }
