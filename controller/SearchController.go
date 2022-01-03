@@ -10,7 +10,6 @@ import (
 
 func Search(c *gin.Context) {
 	var u _request.SearchUsers
-
 	if err := c.ShouldBind(&u); err != nil {
 		response.Fail(c, nil, "请求错误")
 	}
