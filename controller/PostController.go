@@ -24,3 +24,15 @@ func CreatePostController(c *gin.Context) {
 	res := service.CreatePost(c, uid.(uint), file, u.Content)
 	response.HandleResponse(c, res)
 }
+
+func NewForwardController(c *gin.Context) {
+	var u _request.NewForward
+	err := c.ShouldBind(&u)
+	if err != nil {
+		response.CheckFail(c, nil, "Invalid parameter")
+		return
+	}
+	uid, _ := c.Get("uid")
+	res := service.NewForward(uid.(uint), u.PID, u.Content)
+	response.HandleResponse(c, res)
+}
