@@ -1,6 +1,7 @@
 package router
 
 import (
+	"net/http"
 	"picture_community/controller"
 	"picture_community/global"
 	"picture_community/middleware"
@@ -19,7 +20,15 @@ func SetRouter() {
 		g.GET("/queryTelephoneIsUnique", controller.TelephoneIsUniqueController)
 	}
 	p := r.Group("/post")
-	{ //p.Use(middleware.AuthMiddleware())
+	{
 		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
 	}
+	l := r.Group("/like")
+	{
+		l.POST("/new", middleware.AuthMiddleware(), controller.CreateLikeController)
+		l.GET("/query", middleware.AuthMiddleware(), controller.QueryLikeController)
+		l.POST("/cancel", middleware.AuthMiddleware(), controller.CancelLikeController)
+	}
+	r.StaticFS("/upload/pictures", http.Dir("./storage"))
+
 }

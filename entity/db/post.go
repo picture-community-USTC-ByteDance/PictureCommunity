@@ -9,7 +9,7 @@ type Post struct {
 	UID              uint
 	PhotoNumber      int
 	Content          string `gorm:"size:400"`
-	TitlePhotoUrl    string `gorm:"size:80"`
+	TitlePhotoUrl    string `gorm:"size:400"`
 	CommentNumber    int
 	ForwardNumber    int
 	LikeNumber       int

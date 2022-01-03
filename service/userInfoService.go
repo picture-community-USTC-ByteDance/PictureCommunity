@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	userupdate "picture_community/dao/user"
 	"picture_community/entity/_request"
 	"picture_community/entity/db"
@@ -9,7 +8,6 @@ import (
 )
 
 func UpdateUserInfo(parm _request.UpdatePost) (status int, message string) {
-	fmt.Println("contents::", parm.ID, parm.Content)
 
 	newUserDetail := db.UserDetail{
 		//ID :666
