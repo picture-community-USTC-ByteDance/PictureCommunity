@@ -11,7 +11,7 @@ const (
 )
 
 type UserClaims struct {
-	ID   int64 `json:"id"`
+	ID   int64
 	time time.Time
 	jwt.StandardClaims
 }
