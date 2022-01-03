@@ -1,10 +1,10 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"picture_community/response"
 	"picture_community/utils"
-	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 /*********************************************************
@@ -14,27 +14,22 @@ import (
 认证成功后，需要登录的api接口使用 uid,_:=ctx.Get("uid")获取本次请求的用户信息。
 
 **********************************************************/
-func AuthMiddleware() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		//获取Authorization，header
-		tokenString := ctx.GetHeader("Authorization")
-		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
-			response.UnAuthorization(ctx, nil, "请先登录")
-			//抛弃请求
-			ctx.Abort()
-			return
-		}
-		//"Bearer "占了7位
-		tokenString = tokenString[7:]
-		claims, err := utils.ParserToken(tokenString)
-		if err != nil {
-			response.UnAuthorization(ctx, nil, err.Error())
-			//抛弃请求
-			ctx.Abort()
-			return
-		}
-		userId := claims.ID
-		ctx.Set("uid", userId)
-		ctx.Next()
+func AuthMiddleware(ctx *gin.Context) {
+	//获取Authorization，header
+	tokenString := ctx.GetHeader("Authorization")
+	if tokenString == "" {
+		response.UnAuthorization(ctx, nil, "请先登录")
+		//抛弃请求
+		ctx.Abort()
+		return
 	}
+	claims, err := utils.ParserToken(tokenString)
+	if err != nil {
+		response.UnAuthorization(ctx, nil, err.Error())
+		ctx.Abort()
+		return
+	}
+	userId := claims.ID
+	ctx.Set("uid", uint(userId))
+	ctx.Next()
 }
