@@ -7,18 +7,18 @@ import (
 
 func QueryIDAndPasswordByUsername(username string) (id int64, password string) {
 	var user db.User
-	global.MysqlDB.Select("id", "password").Where("username=?", username).First(&user)
+	global.MysqlDB.Select("uid", "password").Where("username=?", username).First(&user)
 	return int64(user.UID), user.Password
 }
 
 func QueryIDAndPasswordByEmail(email string) (id int64, password string) {
 	var user db.User
-	global.MysqlDB.Select("id", "password").Where("email=?", email).First(&user)
+	global.MysqlDB.Select("uid", "password").Where("email=?", email).First(&user)
 	return int64(user.UID), user.Password
 }
 
 func QueryIDAndPasswordByTelephone(telephone string) (id int64, password string) {
 	var user db.User
-	global.MysqlDB.Select("id", "password").Where("telephone=?", telephone).First(&user)
+	global.MysqlDB.Select("uid", "password").Where("telephone=?", telephone).First(&user)
 	return int64(user.UID), user.Password
 }
