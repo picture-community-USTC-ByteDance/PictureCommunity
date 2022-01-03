@@ -24,6 +24,10 @@ func SetRouter() {
 	{ //p.Use(middleware.AuthMiddleware())
 		p.POST("/create", middleware.AuthMiddleware, controller.CreatePostController)
 	}
+	f := r.Group("/forward")
+	{
+		f.POST("/new", middleware.AuthMiddleware, controller.NewForwardController)
+	}
 	l := r.Group("/like")
 	{
 		l.POST("/new", middleware.AuthMiddleware, controller.CreateLikeController)
