@@ -2,7 +2,7 @@ package _response
 
 type ResponseSearchUsers struct {
 	Profile  string `json:"profile"`
-	UserName string `json:"username"`
-	NickName string `json:"nickname"`
+	Uid      uint   `json:"uid"`
+	Nickname string `json:"nickname"`
 	Motto    string `json:"motto"`
 }
