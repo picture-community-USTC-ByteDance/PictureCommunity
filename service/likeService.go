@@ -1,15 +1,12 @@
 package service
 
 import (
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"picture_community/dao/like"
+	"picture_community/dao/post"
 	"picture_community/entity/db"
-	"picture_community/response"
 	"time"
 )
 
-func CreateLike(u_id uint, post_id uint) response.ResStruct {
+func CreateLike(u_id uint, post_id uint) bool {
 	newLike := db.Liked{
 		ToLikePostID: u_id,
 		FromUserID:   post_id,
@@ -17,42 +14,39 @@ func CreateLike(u_id uint, post_id uint) response.ResStruct {
 		UpdateTime:   time.Time{},
 		CreateTime:   time.Time{},
 	}
-	likeID, err := like.InsertLikeByUserID(newLike)
+	id, state, err := post.QueryLikeByUserID(u_id, post_id)
 	if err != nil {
-		return response.ResStruct{
-			HttpStatus: http.StatusGatewayTimeout,
-			Code:       response.FailCode,
-			Message:    err.Error(),
-			Data:       gin.H{"like_id": likeID},
+		_, err := post.InsertLikeByUserID(newLike)
+		if err != nil {
+			return false
 		}
+		return true
 	}
-	return response.ResStruct{
-		HttpStatus: http.StatusOK,
-		Code:       response.SuccessCode,
-		Message:    "ok",
-		Data:       gin.H{"like_id": likeID},
+	if state != true {
+		_, err := post.UpdateLikeByUserID(id, true)
+		if err != nil {
+			return false
+		}
+		return true
 	}
+	return true
 }
 
-func QueryLike(u_id uint, post_id uint) response.ResStruct {
-	res, _ := like.QueryLikeByUserID(u_id, post_id)
-	return response.ResStruct{
-		HttpStatus: http.StatusOK,
-		Code:       response.SuccessCode,
-		Message:    "ok",
-		Data:       gin.H{"State": res},
+func QueryLike(u_id uint, post_id uint) bool {
+	_, state, err := post.QueryLikeByUserID(u_id, post_id)
+	if err != nil {
+		return false
 	}
+	return state
 }
-func CancelLike(u_id uint, post_id uint) response.ResStruct {
-	state, _ := like.QueryLikeByUserID(u_id, post_id)
+func CancelLike(u_id uint, post_id uint) bool {
+	id, state, _ := post.QueryLikeByUserID(u_id, post_id)
 	if state == true {
-		_ = like.CancelLikeByUserID(u_id, post_id)
+		_, err := post.UpdateLikeByUserID(id, false)
+		if err != nil {
+			return false
+		}
+		return true
 	}
-	return response.ResStruct{
-		HttpStatus: http.StatusOK,
-		Code:       response.SuccessCode,
-		Message:    "ok",
-		Data:       nil,
-	}
-
+	return false
 }

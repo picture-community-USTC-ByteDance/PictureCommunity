@@ -20,8 +20,8 @@ func SetRouter() {
 	}
 	l := r.Group("/like")
 	{
-		l.POST("/new", controller.CreateLikeController)
-		l.GET("/query", controller.QueryLikeController)
-		l.POST("/cancel", controller.CancelLikeController)
+		l.POST("/new", middleware.AuthMiddleware(), controller.CreateLikeController)
+		l.GET("/query", middleware.AuthMiddleware(), controller.QueryLikeController)
+		l.POST("/cancel", middleware.AuthMiddleware(), controller.CancelLikeController)
 	}
 }
