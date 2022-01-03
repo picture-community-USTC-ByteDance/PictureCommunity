@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"github.com/gin-gonic/gin"
 	"picture_community/response"
 	"picture_community/utils"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 /*********************************************************
@@ -34,7 +35,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		userId := claims.ID
-		ctx.Set("uid", userId)
+		ctx.Set("uid", uint(userId))
 		ctx.Next()
 	}
 }
