@@ -5,6 +5,6 @@ type RegisterUser struct {
 	Password string `form:"password" json:"password" binding:"required"`
 }
 
-type IsUniqueInfo struct {
+type UsernameIsUniqueInfo struct {
 	Username string `form:"username" json:"username" binding:"required"`
 }

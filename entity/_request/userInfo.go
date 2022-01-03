@@ -12,3 +12,11 @@ type UserInfo struct {
 	Address   string    `json:"address"`
 	Profile   string    `json:"profile"` //头像url
 }
+
+type EmailIsUniqueInfo struct {
+	Email string `form:"email" json:"email" binding:"required"`
+}
+
+type TelephoneIsUniqueInfo struct {
+	Telephone uint `form:"telephone" json:"telephone" binding:"required"`
+}

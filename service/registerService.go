@@ -2,77 +2,39 @@ package service
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"math/rand"
-	"net/http"
 	"picture_community/dao/user"
 	"picture_community/entity/_request"
 	"picture_community/entity/db"
-	"picture_community/response"
-	"time"
+	"picture_community/global"
 )
 
-func RegisterService(param _request.RegisterUser) response.ResStruct {
-	//todo 生成ID
+func RegisterService(param _request.RegisterUser) (isOK bool, message string) {
 	UID, _ := user.QueryIDAndPasswordByUsername(param.Username)
-	if UID > 0 {
-		return response.ResStruct{
-			HttpStatus: http.StatusBadRequest,
-			Code:       response.FailCode,
-			Message:    "Register fail: duplicate username",
-			Data:       nil,
-		}
+	if UID != 0 {
+		return false, "用户名重复"
 	}
 	newUser := db.User{
-		UID:       produceID(),
-		Username:  param.Username,
-		Password:  param.Password,
-		Telephone: 0,
-		Email:     "",
-		Status:    0,
+		UID:      global.UserIDGenerator.NewID(),
+		Username: param.Username,
+		Password: param.Password,
+		Status:   0,
 	}
 	err := user.InsertUser(newUser)
 	if err != nil {
 		fmt.Println(err)
-		return response.ResStruct{
-			HttpStatus: http.StatusBadRequest,
-			Code:       response.FailCode,
-			Message:    "Register fail",
-			Data:       gin.H{"err": err},
-		}
+		return false, "注册失败"
 	} else {
-		return response.ResStruct{
-			HttpStatus: http.StatusOK,
-			Code:       response.SuccessCode,
-			Message:    "Register success",
-			Data:       nil,
-		}
+		return true, "注册成功"
 	}
 }
 
-func IsUnique(param _request.IsUniqueInfo) response.ResStruct {
-	//todo 接口修改
+func UsernameIsUnique(param _request.UsernameIsUniqueInfo) (isOK bool, message string) {
+	//todo 用户名合法性检查
 	ID, _ := user.QueryIDAndPasswordByUsername(param.Username)
 
-	if ID > 0 {
-		return response.ResStruct{
-			HttpStatus: http.StatusOK,
-			Code:       response.FailCode,
-			Message:    "duplicate username",
-			Data:       nil,
-		}
+	if ID != 0 {
+		return false, "用户名重复"
 	} else {
-		return response.ResStruct{
-			HttpStatus: http.StatusOK,
-			Code:       response.SuccessCode,
-			Message:    "unique username",
-			Data:       nil,
-		}
+		return true, "用户名可用"
 	}
-}
-
-func produceID() uint {
-	rand.Seed(time.Now().Unix())
-	data := rand.Int63n(100)
-	return uint(data)
 }

@@ -14,7 +14,9 @@ func SetRouter() {
 	{
 		g.POST("/login", controller.LoginController)
 		g.POST("/register", controller.RegisterController)
-		g.POST("/isUnique", controller.IsUniqueController)
+		g.GET("/queryUsernameIsUnique", controller.UsernameIsUniqueController)
+		g.GET("/queryEmailIsUnique", controller.EmailIsUniqueController)
+		g.GET("/queryTelephoneIsUnique", controller.TelephoneIsUniqueController)
 	}
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())

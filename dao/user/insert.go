@@ -1,47 +1,27 @@
 package user
 
 import (
+	"gorm.io/gorm"
 	"picture_community/entity/db"
 	"picture_community/global"
-	"time"
 )
 
 func InsertUser(newUser db.User) error {
-	//todo:中途出错要回滚
-	err := global.MysqlDB.Create(&newUser).Error
-	if err != nil {
-		return err
-	}
+	return global.MysqlDB.Transaction(func(tx *gorm.DB) error {
+		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）
+		if err := tx.Create(&newUser).Error; err != nil {
+			// 返回任何错误都会回滚事务
+			return err
+		}
 
-	newUserDetail := db.UserDetail{
-		//todo: UID生成
-		UID:           newUser.UID,
-		Nickname:      "",
-		Sex:           false,
-		Birthday:      time.Now(),
-		Address:       "",
-		Motto:         "",
-		Profile:       "",
-		OriginProfile: "",
-	}
+		if err := tx.Create(&db.UserDetail{UID: newUser.UID}).Error; err != nil {
+			return err
+		}
 
-	err = global.MysqlDB.Create(&newUserDetail).Error
-	if err != nil {
-		return err
-	}
-
-	newUserData := db.UserData{
-		UID:              newUser.UID,
-		FollowersNumber:  0,
-		FansNumber:       0,
-		PostsNumber:      0,
-		CollectionNumber: 0,
-		ForwardNumber:    0,
-	}
-
-	err = global.MysqlDB.Create(&newUserData).Error
-	if err != nil {
-		return err
-	}
-	return nil
+		if err := tx.Create(&db.UserData{UID: newUser.UID}).Error; err != nil {
+			return err
+		}
+		// 返回 nil 提交事务
+		return nil
+	})
 }

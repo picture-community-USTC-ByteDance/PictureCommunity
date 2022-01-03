@@ -10,21 +10,30 @@ import (
 func RegisterController(c *gin.Context) {
 	var u _request.RegisterUser
 	if err := c.ShouldBind(&u); err != nil {
-		response.Fail(c, nil, "Register invalid parameter")
+		response.CheckFail(c, nil, "注册参数错误")
 		return
 	}
-	res := service.RegisterService(u)
-	response.HandleResponse(c, res)
+	isOK, message := service.RegisterService(u)
+	if isOK {
+		response.Success(c, nil, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
+	return
 }
 
-func IsUniqueController(c *gin.Context) {
-	var u _request.IsUniqueInfo
+func UsernameIsUniqueController(c *gin.Context) {
+	var u _request.UsernameIsUniqueInfo
 	if err := c.ShouldBind(&u); err != nil {
-		response.Fail(c, nil, "IsUnique invalid parameter")
+		response.CheckFail(c, nil, "检查用户名可用性参数错误")
+		return
 	}
 
-	//todo 验证用户名合法性
-
-	res := service.IsUnique(u)
-	response.HandleResponse(c, res)
+	isOK, message := service.UsernameIsUnique(u)
+	if isOK {
+		response.Success(c, nil, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
+	return
 }
