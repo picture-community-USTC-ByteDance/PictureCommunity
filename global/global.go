@@ -3,6 +3,7 @@ package global
 import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"picture_community/utils"
 )
 
 var (
@@ -10,4 +11,9 @@ var (
 	MysqlDB *gorm.DB
 
 	GinEngine *gin.Engine
+
+	UserIDGenerator    *utils.IDGenerator
+	PostIDGenerator    *utils.IDGenerator
+	ForwardIDGenerator *utils.IDGenerator
+	CommentIDGenerator *utils.IDGenerator
 )
