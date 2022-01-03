@@ -12,7 +12,7 @@ func SearchService(u _request.SearchUsers) (int64, int, []_response.ResponseSear
 	/*支持多个关键词搜索，关键词用空格隔开*/
 	keywords := "%" + strings.Replace(u.NickName, " ", "%", -1) + "%"
 
-	count, searchUsers := user.QuerySearchUsersByNickname(keywords, u.Page, u.PageSize)
+	count, searchUsers := user.QueryUserListByNickname(keywords, u.Page, u.PageSize)
 
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
