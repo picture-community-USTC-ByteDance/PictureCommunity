@@ -17,7 +17,7 @@ func QueryFirstCommentDAO(pagesize int, page int, postid int) (error, []_respons
 func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
 	var com db.Comment
 	//自动生成comment的id
-	com.CID = 0
+	com.CID = 1
 	com.Content = content
 	com.ParentID = 0
 	com.PostID = postid
@@ -76,8 +76,11 @@ func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, conten
 	return err, re
 }
 func DeleteCommentDAO(commentid uint) error {
-	var com db.Comment
-	com.CID = commentid
-	err := global.MysqlDB.Delete(&com).Error
+	var comment db.Comment
+	err := global.MysqlDB.Debug().Where("c_id = ?", commentid).First(&comment).Error
+	if err != nil {
+		return err
+	}
+	err = global.MysqlDB.Debug().Model(&comment).Update("content", "该评论已被删除").Error
 	return err
 }
