@@ -18,6 +18,13 @@ func SetRouter() {
 	p := r.Group("/post")
 	{
 		p.POST("/create", middleware.AuthMiddleware(), controller.CreatePostController)
+		c := p.Group("/comment")
+		{
+			c.GET("/query", controller.QueryCommentController)
+			c.POST("/new", controller.AddFirstLevelCommentController)
+			c.DELETE("/delete", controller.DeleteCommentController)
+			c.POST("/secondNew", controller.AddSecondLevelCommentController)
+		}
 	}
 	l := r.Group("/like")
 	{
