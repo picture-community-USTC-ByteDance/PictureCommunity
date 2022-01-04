@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-func UpdateUserDetailService(param _request.UpdateUserDetail, uid uint) (isOK bool, message string) {
+func UpdateUserDetailService(param _request.UpdateUserDetailInfo, uid uint) (isOK bool, message string) {
 
 	newUserDetail := db.UserDetail{
 		Nickname:      param.Nickname,
@@ -54,5 +54,39 @@ func TelephoneIsUniqueService(param _request.TelephoneIsUniqueInfo) (isOK bool, 
 	} else {
 		fmt.Println(err)
 		return false, "数据库错误"
+	}
+}
+
+func UpdateUserEmailService(param _request.UpdateUserEmailInfo, uid uint) (isOK bool, message string) {
+	_, _, err := userupdate.QueryIDAndPasswordByEmail(param.Email)
+	if err == nil {
+		return false, "email重复"
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		fmt.Println(err)
+		return false, "数据库错误"
+	}
+
+	err = userupdate.UpdateEmailByID(uid, param.Email)
+	if err != nil {
+		return false, "email更新失败"
+	} else {
+		return true, "email更新成功"
+	}
+}
+
+func UpdateUserTelephoneService(param _request.UpdateUserTelephoneInfo, uid uint) (isOK bool, message string) {
+	_, _, err := userupdate.QueryIDAndPasswordByTelephone(strconv.Itoa(int(param.Telephone)))
+	if err == nil {
+		return false, "电话号码重复"
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		fmt.Println(err)
+		return false, "数据库错误"
+	}
+
+	err = userupdate.UpdateTelephoneByID(uid, param.Telephone)
+	if err != nil {
+		return false, "电话号码更新失败"
+	} else {
+		return true, "电话号码更新成功"
 	}
 }

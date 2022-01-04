@@ -7,8 +7,8 @@ import (
 	"picture_community/service"
 )
 
-func UpdateUserController(c *gin.Context) {
-	var u _request.UpdateUserDetail
+func UpdateUserDetailController(c *gin.Context) {
+	var u _request.UpdateUserDetailInfo
 
 	if err := c.ShouldBind(&u); err != nil {
 		response.CheckFail(c, nil, "更新用户信息参数错误")
@@ -51,4 +51,37 @@ func TelephoneIsUniqueController(c *gin.Context) {
 	} else {
 		response.Fail(c, nil, message)
 	}
+}
+
+func UpdateUserEmailController(c *gin.Context) {
+	var u _request.UpdateUserEmailInfo
+	if err := c.ShouldBind(&u); err != nil {
+		response.CheckFail(c, nil, "更新email参数错误")
+		return
+	}
+	uid, _ := c.Get("uid")
+	isOK, message := service.UpdateUserEmailService(u, uid.(uint))
+	if isOK {
+		response.Success(c, nil, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
+	return
+}
+
+func UpdateUserTelephoneController(c *gin.Context) {
+	var u _request.UpdateUserTelephoneInfo
+	if err := c.ShouldBind(&u); err != nil {
+		response.CheckFail(c, nil, "更新电话号码参数错误")
+		return
+	}
+
+	uid, _ := c.Get("uid")
+	isOK, message := service.UpdateUserTelephoneService(u, uid.(uint))
+	if isOK {
+		response.Success(c, nil, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
+	return
 }
