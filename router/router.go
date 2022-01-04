@@ -34,7 +34,12 @@ func SetRouter() {
 		l.GET("/query", middleware.AuthMiddleware, controller.QueryLikeController)
 		l.POST("/cancel", middleware.AuthMiddleware, controller.CancelLikeController)
 	}
-
+	c := r.Group("/collection")
+	{
+		c.POST("/new", middleware.AuthMiddleware, controller.CreateCollectionController)
+		c.GET("/query", middleware.AuthMiddleware, controller.QueryCollectionController)
+		c.POST("/cancel", middleware.AuthMiddleware, controller.CancelCollectionController)
+	}
 	u := r.Group("/list")
 	{
 		u.Use(middleware.AuthMiddleware)
