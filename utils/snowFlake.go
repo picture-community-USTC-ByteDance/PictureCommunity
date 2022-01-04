@@ -36,7 +36,7 @@ func NewIDGenerator(workerId int64, flag int64) *IDGenerator {
 	}
 }
 
-func (w *IDGenerator) newID() uint {
+func (w *IDGenerator) NewID() uint {
 	w.mu.Lock()
 	defer w.mu.Unlock()
 	now := time.Now().UnixNano() / 1e6
