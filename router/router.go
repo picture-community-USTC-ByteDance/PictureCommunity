@@ -25,6 +25,12 @@ func SetRouter() {
 		l.GET("/query", middleware.AuthMiddleware, controller.QueryLikeController)
 		l.POST("/cancel", middleware.AuthMiddleware, controller.CancelLikeController)
 	}
+	c := r.Group("/collection")
+	{
+		c.POST("/new", middleware.AuthMiddleware, controller.CreateCollectionController)
+		c.GET("/query", middleware.AuthMiddleware, controller.QueryCollectionController)
+		c.POST("/cancel", middleware.AuthMiddleware, controller.CancelCollectionController)
+	}
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
 	r.GET("/token", controller.GetToken)
