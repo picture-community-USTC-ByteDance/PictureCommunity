@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterController(c *gin.Context) {
-	var u _request.RegisterUser
+	var u _request.RegisterUserInfo
 	if err := c.ShouldBind(&u); err != nil {
 		response.CheckFail(c, nil, "注册参数错误")
 		return

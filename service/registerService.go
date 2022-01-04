@@ -10,7 +10,7 @@ import (
 	"picture_community/global"
 )
 
-func RegisterService(param _request.RegisterUser) (isOK bool, message string) {
+func RegisterService(param _request.RegisterUserInfo) (isOK bool, message string) {
 	_, _, err := user.QueryIDAndPasswordByUsername(param.Username)
 	if err == nil {
 		return false, "用户名重复"
