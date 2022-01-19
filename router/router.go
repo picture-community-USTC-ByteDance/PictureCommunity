@@ -56,7 +56,8 @@ func SetRouter() {
 	m := r.Group("/firstpage")
 	{
 
-		m.GET("/getPost", controller.UserCollection)
+		m.GET("/getIdList", controller.GetIdListController)
+		m.GET("/getDetailList", controller.GetDetailController)
 	}
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
