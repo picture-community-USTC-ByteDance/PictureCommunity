@@ -15,15 +15,15 @@ func GetPostIdList(uid uint, page int, pageSize int) (bool, []uint) {
 	index := 0
 	for i := 0; i < len(followUserList); i++ {
 		prow, postId := firstpage.QueryNewPostId(followUserList[i])
-		//frow,forwardId := firstpage.QueryNewForwardId(followUserList[i])
+		frow, forwardId := firstpage.QueryNewForwardId(followUserList[i])
 		if prow != 0 {
 			postIdList[index] = postId
 			index++
 		}
-		//if frow != 0{
-		//	postIdList[index] = forwardId
-		//	index++
-		//}
+		if frow != 0 {
+			postIdList[index] = forwardId
+			index++
+		}
 	}
 	return true, postIdList[0:index]
 }

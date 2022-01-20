@@ -32,8 +32,8 @@ func QueryNewPostId(uid uint) (row int, pid uint) {
 /*通过关注的人的id获取他们的最新转发帖子id*/
 func QueryNewForwardId(uid uint) (row int, fid uint) {
 	result := global.MysqlDB.Model(db.Forward{}).
-		Select("f_id").
-		Where("forward.to_forward_post_id = ?", uid).
+		Select("to_forward_post_id").
+		Where("forward.author_user_id = ?", uid).
 		Order("update_time desc").Take(&fid)
 	if result.RowsAffected == 0 {
 		return 0, 0
