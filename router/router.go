@@ -9,7 +9,6 @@ import (
 
 func SetRouter() {
 	r := global.GinEngine
-
 	r.GET("/search", controller.SearchUsers)
 	g := r.Group("/user")
 	{
@@ -53,7 +52,12 @@ func SetRouter() {
 		u.GET("/likepost", controller.UserLikePost) //本用户点赞过的帖子
 		u.GET("/collection", controller.UserCollection)
 	}
+	m := r.Group("/firstpage")
+	{
 
+		m.GET("/getIdList", controller.GetIdListController)
+		m.GET("/getDetailList", controller.GetDetailController)
+	}
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
 	r.GET("/token", controller.GetToken)
