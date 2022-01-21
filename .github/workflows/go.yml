@@ -2,9 +2,9 @@ name: Go
 
 on:
   push:
-    branches: [ firstpage ]
+    branches: [ main ]
   pull_request:
-    branches: [ firstpage ]
+    branches: [ main ]
 
 jobs:
 
