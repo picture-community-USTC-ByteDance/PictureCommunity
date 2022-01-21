@@ -11,27 +11,25 @@ const (
 )
 
 type UserClaims struct {
-	ID int64 `json:"id"`
+	ID   int64
+	time time.Time
 	jwt.StandardClaims
 }
 
-func CreateToken(id int64) (string, error) {
-	claims := UserClaims{id, jwt.StandardClaims{
+func CreateToken(id int64) string {
+	claims := UserClaims{id, time.Now(), jwt.StandardClaims{
 		NotBefore: time.Now().Unix() - 1000,       // 签名生效时间
-		ExpiresAt: time.Now().Unix() + 8000000000, // 过期时间 7天  配置文件
+		ExpiresAt: time.Now().Unix() + 7*86400000, // 过期时间 7天  配置文件
 		Issuer:    "thg",                          // 签名的发行者
 	}}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(SignedKey))
-	if err != nil {
-		return "", err
-	}
-	return tokenString, nil
+	tokenString, _ := token.SignedString([]byte(SignedKey))
+	return tokenString
 }
 
 func ParserToken(tokenString string) (*UserClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return SignedKey, nil
+		return []byte(SignedKey), nil
 	})
 	if err != nil {
 		if ve, ok := err.(*jwt.ValidationError); ok {
