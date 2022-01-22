@@ -23,7 +23,7 @@ func InsertCollectionByUserID(newCollection db.Collection) (int64, error) {
 	var post db.Post
 	global.MysqlDB.First(&post, newCollection.PID)
 	num := post.CollectionNumber
-	global.MysqlDB.Model(&post).Where("post_id=?", newCollection.PID).Update("collection_number", num+1) //帖子点赞数➕1
+	global.MysqlDB.Model(&post).Update("collection_number", num+1) //帖子点赞数➕1
 
 	return int64(newCollection.UID), err
 
@@ -31,16 +31,22 @@ func InsertCollectionByUserID(newCollection db.Collection) (int64, error) {
 func UpdateCollectionByUserID(id uint, state bool) (bool, error) {
 	var collection db.Collection
 	collection.ID = id
-	fmt.Println(id)
+	//fmt.Println(id)
 	err := global.MysqlDB.Model(&collection).Where("id=?", id).Update("state", state).Error
-	post_id := global.MysqlDB.Model(&collection).Select("p_id")
+	global.MysqlDB.First(&collection)
+	post_id := collection.PID
+
 	var post db.Post
+	//fmt.Println("update post_id= ", post_id)
 	global.MysqlDB.First(&post, post_id)
 	num := post.CollectionNumber
 	if state {
 		global.MysqlDB.Model(&post).Update("collection_number", num+1) //帖子点赞数➕1
 		return collection.State, err
 	}
-	global.MysqlDB.Model(&post).Update("collection_number", num-1) //帖子点赞数➖1
+	fmt.Println("num= ", num)
+	if num != 0 {
+		global.MysqlDB.Model(&post).Update("collection_number", num-1) //帖子点赞数➖1
+	}
 	return collection.State, err
 }

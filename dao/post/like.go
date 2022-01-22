@@ -37,7 +37,7 @@ func InsertLikeByUserID(u_id uint, post_id uint) (int64, error) {
 	var post db.Post
 	global.MysqlDB.First(&post, post_id)
 	num := post.LikeNumber
-	global.MysqlDB.Model(&post).Where("post_id=?", post_id).Update("like_number", num+1) //帖子点赞数➕1
+	global.MysqlDB.Model(&post).Update("like_number", num+1) //帖子点赞数➕1
 
 	return int64(newLike.FromUserID), err
 
@@ -47,8 +47,9 @@ func UpdateLikeByUserID(id uint, state bool) (bool, error) {
 	var like db.Liked
 	like.ID = id
 	err := global.MysqlDB.Model(&like).Where("id=?", id).Update("state", state).Error
-	//err := global.MysqlDB.Model(&like).Update("state", state).Error
-	post_id := global.MysqlDB.Model(&like).Select("to_like_post_id")
+	global.MysqlDB.First(&like)
+	post_id := like.ToLikePostID
+
 	var post db.Post
 	global.MysqlDB.First(&post, post_id)
 	num := post.LikeNumber
@@ -56,6 +57,9 @@ func UpdateLikeByUserID(id uint, state bool) (bool, error) {
 		global.MysqlDB.Model(&post).Update("like_number", num+1) //帖子点赞数➕1
 		return like.State, err
 	}
-	global.MysqlDB.Model(&post).Update("like_number", num-1) //帖子点赞数➕1
+	if num != 0 {
+		global.MysqlDB.Model(&post).Update("like_number", num-1) //帖子点赞数➕1
+	}
+
 	return like.State, err
 }

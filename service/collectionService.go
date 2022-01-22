@@ -14,14 +14,14 @@ func CreateCollection(u_id uint, post_id uint) bool {
 	}
 
 	id, state, _ := post.QueryCollectionByUserID(u_id, post_id)
-	if id == 0 {
+	if id == 0 { //没有该收藏的记录
 		_, err := post.InsertCollectionByUserID(newCollection)
 		if err != nil {
 			return false
 		}
 		return true
 	}
-	if state != true {
+	if state != true { //有该收藏的记录
 		_, err := post.UpdateCollectionByUserID(id, true)
 		if err != nil {
 			return false
