@@ -1,17 +1,20 @@
 package service
 
 import (
+	"errors"
 	"mime/multipart"
 	"net/http"
 	"path"
 	"picture_community/dao/post"
 	"picture_community/entity/db"
+	"picture_community/global"
 	"picture_community/response"
 	"picture_community/utils"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 const (
@@ -59,5 +62,54 @@ func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content str
 		Code:       response.SuccessCode,
 		Message:    "ok",
 		Data:       gin.H{"post_id": postID},
+	}
+}
+
+func NewForward(uid uint, pid uint, content string) response.ResStruct {
+	var forward db.Forward
+	var post db.Post
+	err := global.MysqlDB.Where("p_id = ?", pid).First(&post).Error
+	if err != nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusOK,
+			Code:       response.FailCode,
+			Message:    "Target post not exist",
+			Data:       err.Error(),
+		}
+	}
+
+	err = global.MysqlDB.Where("author_user_id = ? AND to_forward_post_id = ?", uid, pid).First(&forward).Error
+	if err == nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusOK,
+			Code:       response.FailCode,
+			Message:    "Already forwarded",
+			Data:       nil,
+		}
+	}
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		forward = db.Forward{
+			AuthorUserID:    uid,
+			ToForwardPostID: pid,
+			CommentNumber:   0,
+			LikeNumber:      0,
+			Content:         content,
+		}
+		err = global.MysqlDB.Create(&forward).Error
+	}
+
+	if err != nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusForbidden,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+			Data:       nil,
+		}
+	}
+	return response.ResStruct{
+		HttpStatus: http.StatusOK,
+		Code:       response.SuccessCode,
+		Message:    "Forward success",
+		Data:       nil,
 	}
 }

@@ -1,39 +1,20 @@
 package service
 
 import (
-	"github.com/gin-gonic/gin"
 	"math"
-	"net/http"
+	"picture_community/dao/user"
 	"picture_community/entity/_request"
-	"picture_community/entity/db"
-	"picture_community/global"
-	"picture_community/response"
+	"picture_community/entity/_response"
+	"strings"
 )
 
-func SearchService(keywords string, pageSize int, page int) response.ResStruct {
-	var searchUsers []_request.SearchUsers
+func SearchService(u _request.SearchUsers) (int64, int, []_response.ResponseSearchUsers) {
+	/*支持多个关键词搜索，关键词用空格隔开*/
+	keywords := "%" + strings.Replace(u.NickName, " ", "%", -1) + "%"
 
-	global.MysqlDB.Offset((page-1)*pageSize).Limit(pageSize).Model(db.UserDetail{}).
-		Select("profile,username,nickname,motto").
-		Joins("inner join user on user.uid = user_detail.uid").
-		Where("nickname like ?", keywords).Scan(&searchUsers)
+	count, searchUsers := user.QueryUserListByNickname(keywords, u.Page, u.PageSize)
 
-	count := len(searchUsers)
-	if count == 0 {
-		return response.ResStruct{
-			HttpStatus: http.StatusBadRequest,
-			Code:       response.FailCode,
-			Message:    "搜索用户不存在",
-			Data:       nil,
-		}
-	}
+	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
-	totalPage := math.Ceil(float64(count) / float64(pageSize))
-
-	return response.ResStruct{
-		HttpStatus: http.StatusOK,
-		Code:       response.SuccessCode,
-		Message:    "ok",
-		Data:       gin.H{"User": searchUsers, "totalPage": totalPage},
-	}
+	return count, totalPage, searchUsers
 }

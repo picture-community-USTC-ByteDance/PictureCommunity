@@ -8,8 +8,9 @@ import (
 )
 
 func GetToken(c *gin.Context) {
-	id, _ := strconv.Atoi(c.Param("id"))
+	id := c.Query("id")
+	uid, _ := strconv.ParseInt(id, 10, 64)
 	c.JSON(http.StatusOK, gin.H{
-		"token": utils.CreateToken(int64(id)),
+		"token": utils.CreateToken(uid),
 	})
 }
