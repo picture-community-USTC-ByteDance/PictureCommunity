@@ -17,6 +17,7 @@ func CreateCollection(u_id uint, post_id uint) bool {
 	if err != nil { //没有该帖子
 		return false
 	}
+
 	if id == 0 { //没有该收藏的记录
 		_, err := post.InsertCollectionByUserID(newCollection)
 		if err != nil {
