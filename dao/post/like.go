@@ -2,6 +2,7 @@ package post
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"picture_community/entity/db"
 	"picture_community/global"
 	"time"
@@ -15,11 +16,13 @@ func QueryLikeByUserID(u_id uint, post_id uint) (uint, bool, error) {
 	//err := global.MysqlDB.First(&like).Error
 	err := global.MysqlDB.Find(&like, "to_like_post_id=? AND from_user_id=?", post_id, u_id).Error
 	fmt.Println("err=", err)
-	/*
-		fmt.Println("ID=  ", like.ID)
-		fmt.Println("state=", like.State)
-		fmt.Println("err=", err)
-	*/
+	//查询是否存在这个帖子
+	var post db.Post
+	err_p := global.MysqlDB.First(&post, post_id).Error
+	if err_p == gorm.ErrRecordNotFound { //不存在该帖子
+		//fmt.Println("err_p:", err_p)
+		return like.ID, like.State, err_p
+	}
 	return like.ID, like.State, err
 }
 
