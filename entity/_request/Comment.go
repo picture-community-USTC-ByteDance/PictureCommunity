@@ -21,3 +21,11 @@ type QueryComment struct {
 	PageSize int `form:"pagesize"  binding:"required"`
 	Page     int `form:"page"  binding:"required"`
 }
+
+type QueryComment2 struct {
+	PID      int `form:"p_id" json:"p_id" binding:"required"`
+	ParentId int `form:"parentid" json:"parentid"`
+	PageSize int `form:"pagesize"  binding:"required"`
+	Page     int `form:"page"  binding:"required"`
+}
+
