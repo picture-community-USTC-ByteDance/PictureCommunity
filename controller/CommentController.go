@@ -49,6 +49,19 @@ func QueryCommentController(c *gin.Context) {
 		response.Success(c, res, "返回评论成功")
 	}
 }
+func QueryCommentController2(c *gin.Context) {
+	var u _request.QueryComment2
+	if err := c.ShouldBind(&u); err != nil {
+		response.Fail(c, nil, "参数错误")
+		return
+	}
+	err, res := service.QueryCommentService2(u)
+	if err != nil {
+		response.Fail(c, nil, "评论返回失败")
+	} else {
+		response.Success(c, res, "返回评论成功")
+	}
+}
 func DeleteCommentController(c *gin.Context) {
 	var u _request.DeleteComment
 	if err := c.ShouldBind(&u); err != nil {
