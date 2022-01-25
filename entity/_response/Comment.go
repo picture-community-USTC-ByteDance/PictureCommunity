@@ -1,6 +1,7 @@
 package _response
 
 type QueryCommentBack struct {
+
 	UID      int    `json:"userId"`
 	NickName string `json:"nickName"`
 	//	Profile     string //头像略缩图
@@ -8,6 +9,7 @@ type QueryCommentBack struct {
 	Content     string //内容
 }
 type QueryCommentBackTemp struct {
+
 	ChildNumber int //子评论个数
 	LikeNumber  int
 	Content     string //内容

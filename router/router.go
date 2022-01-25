@@ -32,6 +32,12 @@ func SetRouter() {
 			c.DELETE("/delete", controller.DeleteCommentController)
 			c.POST("/secondNew", controller.AddSecondLevelCommentController)
 		}
+
+	}
+	q := r.Group("/query")
+	{
+		q.GET("/userData", middleware.AuthMiddleware, controller.QueryUserData)
+		q.GET("/userDetail", middleware.AuthMiddleware, controller.QueryUserPosts)
 	}
 	f := r.Group("/forward")
 	{

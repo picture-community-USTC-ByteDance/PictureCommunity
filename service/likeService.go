@@ -8,6 +8,9 @@ import (
 func CreateLike(u_id uint, post_id uint) bool {
 
 	id, state, err := post.QueryLikeByUserID(u_id, post_id)
+	if err != nil { //没有该帖子
+		return false
+	}
 	if id == 0 { //没找到时 err仍然等于nil，id=0，state = false
 		fmt.Println(err)
 		_, err := post.InsertLikeByUserID(u_id, post_id)
