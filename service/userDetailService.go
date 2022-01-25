@@ -8,14 +8,15 @@ import (
 	"picture_community/entity/_request"
 	"picture_community/entity/db"
 	"strconv"
+	"time"
 )
 
-func UpdateUserDetailService(param _request.UpdateUserDetailInfo, uid uint) (isOK bool, message string) {
+func UpdateUserDetailService(param _request.UpdateUserDetailInfo, birthday time.Time, uid uint) (isOK bool, message string) {
 
 	newUserDetail := db.UserDetail{
 		Nickname:      param.Nickname,
 		Sex:           param.Sex,
-		Birthday:      param.Birthday,
+		Birthday:      birthday,
 		Address:       param.Address,
 		Motto:         param.Motto,
 		Profile:       param.Profile,

@@ -19,7 +19,7 @@ import (
 
 const (
 	StorageLocation = "storage"
-	ServerName      = "localhost"
+	ServerName      = "121.5.1.73"
 )
 
 func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content string) response.ResStruct {

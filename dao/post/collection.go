@@ -2,6 +2,7 @@ package post
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"picture_community/entity/db"
 	"picture_community/global"
 )
@@ -12,6 +13,13 @@ func QueryCollectionByUserID(u_id uint, post_id uint) (uint, bool, error) {
 	collection.UID = u_id
 	fmt.Println("uid=", u_id, "post_id=", post_id)
 	err := global.MysqlDB.Find(&collection, "p_id=? AND uid=?", post_id, u_id).Error
+	//查询是否存在这个帖子
+	var post db.Post
+	err_p := global.MysqlDB.First(&post, post_id).Error
+	if err_p == gorm.ErrRecordNotFound { //不存在该帖子
+		//fmt.Println("err_p:", err_p)
+		return collection.ID, collection.State, err_p
+	}
 	fmt.Println("state:", collection.State)
 	return collection.ID, collection.State, err
 }

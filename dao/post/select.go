@@ -8,7 +8,7 @@ import (
 
 func InsertPostByUserID(newPost db.Post) (int64, error) {
 	err := global.MysqlDB.Create(&newPost).Error
-	return int64(newPost.UID), err
+	return int64(newPost.PID), err
 }
 
 //个人主页里面 根据用户UID查询他的收藏帖子列表 每个帖子返回封面、pid
