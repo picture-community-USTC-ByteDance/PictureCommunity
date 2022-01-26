@@ -27,10 +27,12 @@ func SetRouter() {
 		c := p.Group("/comment")
 		{
 			c.GET("/query", controller.QueryCommentController)
+			c.GET("/querySecond", controller.QueryCommentController2)
 			c.POST("/new", controller.AddFirstLevelCommentController)
 			c.DELETE("/delete", controller.DeleteCommentController)
 			c.POST("/secondNew", controller.AddSecondLevelCommentController)
 		}
+
 	}
 	q := r.Group("/query")
 	{
