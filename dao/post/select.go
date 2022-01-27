@@ -8,7 +8,7 @@ import (
 
 func InsertPostByUserID(newPost db.Post) (int64, error) {
 	err := global.MysqlDB.Create(&newPost).Error
-	return int64(newPost.UID), err
+	return int64(newPost.PID), err
 }
 
 //个人主页里面 根据用户UID查询他的收藏帖子列表 每个帖子返回封面、pid
@@ -41,7 +41,7 @@ func QueryPostListByUID(uid uint, page int, pageSize int) (int64, []_response.Re
 	var count int64
 	global.MysqlDB.Model(&db.Post{}).
 		Select("p_id,title_photo_url").
-		Where("uid = ?", uid).Count(&count).
+		Where("uid=?", uid).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&postList)
 
 	return count, postList

@@ -7,8 +7,8 @@ import (
 type UserDetail struct {
 	UID           uint
 	Nickname      string
-	Sex           bool //false为女  true为男
-	Birthday      time.Time
+	Sex           bool      //false为女  true为男
+	Birthday      time.Time `gorm:"autoCreateTime:milli"`
 	Address       string
 	Motto         string
 	Profile       string    //略缩图

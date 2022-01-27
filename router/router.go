@@ -9,7 +9,6 @@ import (
 
 func SetRouter() {
 	r := global.GinEngine
-
 	r.GET("/search", controller.SearchUsers)
 	g := r.Group("/user")
 	{
@@ -25,10 +24,26 @@ func SetRouter() {
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())
 		p.POST("/create", middleware.AuthMiddleware, controller.CreatePostController)
+		p.POST("/delete", middleware.AuthMiddleware, controller.DeletePostController)
+		c := p.Group("/comment")
+		{
+			c.GET("/query", controller.QueryCommentController)
+			c.GET("/querySecond", controller.QueryCommentController2)
+			c.POST("/new", controller.AddFirstLevelCommentController)
+			c.DELETE("/delete", controller.DeleteCommentController)
+			c.POST("/secondNew", controller.AddSecondLevelCommentController)
+		}
+
+	}
+	q := r.Group("/query")
+	{
+		q.GET("/userData", middleware.AuthMiddleware, controller.QueryUserData)
+		q.GET("/userDetail", middleware.AuthMiddleware, controller.QueryUserPosts)
 	}
 	f := r.Group("/forward")
 	{
 		f.POST("/new", middleware.AuthMiddleware, controller.NewForwardController)
+		f.POST("/delete", middleware.AuthMiddleware, controller.DeleteForwardController)
 	}
 	l := r.Group("/like")
 	{
@@ -53,7 +68,14 @@ func SetRouter() {
 		u.GET("/likepost", controller.UserLikePost) //本用户点赞过的帖子
 		u.GET("/collection", controller.UserCollection)
 	}
+	m := r.Group("/firstpage")
+	{
 
+		m.GET("/getIdList", controller.GetIdListController)
+		m.GET("/getDetailList", controller.GetDetailController)
+	}
+
+	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
 	r.GET("/token", controller.GetToken)
