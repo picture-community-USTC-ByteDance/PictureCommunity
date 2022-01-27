@@ -20,6 +20,7 @@ func SetRouter() {
 		g.POST("/updateUserDetail", middleware.AuthMiddleware, controller.UpdateUserDetailController)
 		g.POST("/updateUserEmail", middleware.AuthMiddleware, controller.UpdateUserEmailController)
 		g.POST("/updateUserTelephone", middleware.AuthMiddleware, controller.UpdateUserTelephoneController)
+		g.POST("/updatePassword", middleware.AuthMiddleware, controller.UpdatePassword)
 	}
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())

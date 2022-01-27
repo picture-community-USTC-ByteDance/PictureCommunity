@@ -21,3 +21,25 @@ func LoginController(c *gin.Context) {
 		response.Fail(c, nil, message)
 	}
 }
+
+func UpdatePassword(c *gin.Context) {
+	uid, exists := c.Get("uid")
+	if exists == false {
+		response.Fail(c, nil, "用户不存在！")
+	}
+
+	var u _request.ModifyPasswd
+	if err := c.ShouldBind(&u); err != nil {
+		response.CheckFail(c, nil, "参数错误")
+		return
+	}
+
+	flag, msg := service.ModifyPassword(uid.(uint), u)
+
+	if flag {
+		response.Success(c, nil, msg)
+	} else {
+		response.Fail(c, nil, msg)
+	}
+
+}
