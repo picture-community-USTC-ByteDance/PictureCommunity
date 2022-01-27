@@ -12,3 +12,14 @@ type UserData struct {
 	CollectionNumber int    `json:"collection_number"`
 	ForwardNumber    int    `json:"forward_number"`
 }
+
+type UserDetail struct {
+	UID           uint
+	Nickname      string
+	Sex           bool //false为女  true为男
+	Birthday      string
+	Address       string
+	Motto         string
+	Profile       string //略缩图
+	OriginProfile string //详细头像url
+}

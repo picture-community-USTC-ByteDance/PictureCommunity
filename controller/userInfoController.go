@@ -110,3 +110,13 @@ func UpdateUserTelephoneController(c *gin.Context) {
 	}
 	return
 }
+
+func QueryMyDetailController(c *gin.Context) {
+	uid, _ := c.Get("uid")
+	isOK, message, detail := service.QueryMyDetailService(uid.(uint))
+	if isOK {
+		response.Success(c, detail, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
+}

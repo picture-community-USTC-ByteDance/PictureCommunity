@@ -91,3 +91,12 @@ func UpdateUserTelephoneService(param _request.UpdateUserTelephoneInfo, uid uint
 		return true, "电话号码更新成功"
 	}
 }
+
+func QueryMyDetailService(uid uint) (isOK bool, message string, detail db.UserDetail) {
+	userDetailInDB, err := userupdate.QueryUserDetailByUID(uid)
+	if err != nil {
+		return false, "查询用户信息失败", userDetailInDB
+	} else {
+		return true, "查询用户信息成功", userDetailInDB
+	}
+}

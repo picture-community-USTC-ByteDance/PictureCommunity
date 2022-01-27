@@ -71,3 +71,9 @@ func QueryLikeList1ByUID(uid uint, page int, pageSize int) (int64, []_response.R
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
 }
+
+func QueryUserDetailByUID(uid uint) (db.UserDetail, error) {
+	var userDetailInDB db.UserDetail
+	err := global.MysqlDB.First(&userDetailInDB, uid).Error
+	return userDetailInDB, err
+}
