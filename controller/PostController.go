@@ -15,13 +15,9 @@ func CreatePostController(c *gin.Context) {
 		response.CheckFail(c, nil, "Invalid parameter")
 		return
 	}
-	file, err := c.FormFile("pic")
-	if err != nil {
-		response.CheckFail(c, nil, "File not found")
-		return
-	}
+
 	uid, _ := c.Get("uid")
-	res := service.CreatePost(c, uid.(uint), file, u.Content)
+	res := service.CreatePost(c, uid.(uint), u.Url, u.Content)
 	response.HandleResponse(c, res)
 }
 
