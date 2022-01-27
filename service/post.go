@@ -22,7 +22,7 @@ const (
 	ServerName      = "121.5.1.73"
 )
 
-func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content string) response.ResStruct {
+func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.ResStruct {
 	utils.PathExists(StorageLocation)
 
 	filesuffix := path.Ext(file.Filename)
@@ -38,9 +38,18 @@ func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content str
 		}
 	}
 	dst = "http://" + ServerName + ":8080/upload/pictures/" + file.Filename
+	return response.ResStruct{
+		HttpStatus: http.StatusOK,
+		Code:       response.SuccessCode,
+		Message:    "ok",
+		Data:       gin.H{"url": dst},
+	}
+}
+
+func CreatePost(c *gin.Context, id uint, url string, content string) response.ResStruct {
 	newPost := db.Post{
 		UID:              id,
-		TitlePhotoUrl:    dst,
+		TitlePhotoUrl:    url,
 		Content:          content,
 		PhotoNumber:      1,
 		CommentNumber:    0,

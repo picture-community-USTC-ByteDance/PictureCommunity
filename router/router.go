@@ -72,6 +72,8 @@ func SetRouter() {
 		m.GET("/getIdList", controller.GetIdListController)
 		m.GET("/getDetailList", controller.GetDetailController)
 	}
+
+	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
 	r.GET("/token", controller.GetToken)
