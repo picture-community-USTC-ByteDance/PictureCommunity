@@ -8,11 +8,12 @@ import (
 
 func QueryCommentService(comment _request.QueryComment) (error, []_response.QueryCommentBackTemp) {
 	//查询comment表,得到该post下的所有一级评论
-	//var backtemp []_response.QueryCommentBackTemp
 	err, back := post.QueryFirstCommentDAO(comment.PageSize, comment.Page, comment.PID)
-	//根据用户id查询user_detail表，返回用户的昵称、头像
-	//back.NickName=" "
-	//back.Profile="nil"
+	return err, back
+}
+func QueryCommentService2(comment _request.QueryComment2) (error, []_response.QueryCommentBackTemp2) {
+	//查询comment表,得到该post和该一级评论下的所有二级评论
+	err, back := post.QuerySecondCommentDAO(comment.PageSize, comment.Page, comment.PID, comment.ParentId)
 	return err, back
 }
 func CreateFirstLevelCommentService(comment _request.CreateFirstLevelComment) (err error, back _response.CreateFirstLevelCommentBack) {

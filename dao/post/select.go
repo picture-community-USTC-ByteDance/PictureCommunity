@@ -41,7 +41,7 @@ func QueryPostListByUID(uid uint, page int, pageSize int) (int64, []_response.Re
 	var count int64
 	global.MysqlDB.Model(&db.Post{}).
 		Select("p_id,title_photo_url").
-		Where("uid = ?", uid).Count(&count).
+		Where("uid=?", uid).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&postList)
 
 	return count, postList

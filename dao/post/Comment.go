@@ -10,19 +10,27 @@ import (
 
 func QueryFirstCommentDAO(pagesize int, page int, postid int) (error, []_response.QueryCommentBackTemp) {
 	var coms []_response.QueryCommentBackTemp
-	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = NULL", postid).Offset(page).Limit(pagesize).Find(&coms).Error
+	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = 0", postid).Offset(page - 1).Limit(pagesize).Find(&coms).Error
+	fmt.Println(coms)
+	return err, coms
+}
+func QuerySecondCommentDAO(pagesize int, page int, postid int, parent_id int) (error, []_response.QueryCommentBackTemp2) {
+	var coms []_response.QueryCommentBackTemp2
+	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = ?", postid, parent_id).Offset(page - 1).Limit(pagesize).Find(&coms).Error
 	fmt.Println(coms)
 	return err, coms
 }
 func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
 	var com db.Comment
 	//自动生成comment的id
-	com.CID = 1
+	//com.CID = 100
 	com.Content = content
 	com.ParentID = 0
 	com.PostID = postid
 	com.UserID = userid
 	com.ChildNumber = 0
+	com.LikeNumber = 0
+	com.DeleteStatus = false
 	result := global.MysqlDB.Debug().Create(&com)
 	err := result.Error
 	var re _response.CreateFirstLevelCommentBack
@@ -48,6 +56,8 @@ func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, conten
 	com.PostID = postid
 	com.UserID = userid
 	com.ChildNumber = 0
+	com.LikeNumber = 0
+	com.DeleteStatus = false
 	result := global.MysqlDB.Debug().Create(&com)
 	err := result.Error
 	var re _response.CreateSecondLevelCommentBack

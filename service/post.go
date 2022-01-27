@@ -22,7 +22,7 @@ const (
 	ServerName      = "121.5.1.73"
 )
 
-func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content string) response.ResStruct {
+func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.ResStruct {
 	utils.PathExists(StorageLocation)
 
 	filesuffix := path.Ext(file.Filename)
@@ -38,9 +38,18 @@ func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content str
 		}
 	}
 	dst = "http://" + ServerName + ":8080/upload/pictures/" + file.Filename
+	return response.ResStruct{
+		HttpStatus: http.StatusOK,
+		Code:       response.SuccessCode,
+		Message:    "ok",
+		Data:       gin.H{"url": dst},
+	}
+}
+
+func CreatePost(c *gin.Context, id uint, url string, content string) response.ResStruct {
 	newPost := db.Post{
 		UID:              id,
-		TitlePhotoUrl:    dst,
+		TitlePhotoUrl:    url,
 		Content:          content,
 		PhotoNumber:      1,
 		CommentNumber:    0,
@@ -65,6 +74,27 @@ func CreatePost(c *gin.Context, id uint, file *multipart.FileHeader, content str
 	}
 }
 
+func DeletePost(uid uint, pid uint) response.ResStruct {
+	post := db.Post{
+		PID: pid,
+	}
+
+	err := global.MysqlDB.Where("uid = ?", uid).Delete(&post).Error
+	if err != nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+	return response.ResStruct{
+		HttpStatus: http.StatusOK,
+		Code:       response.SuccessCode,
+		Message:    "delete success",
+		Data:       nil,
+	}
+}
+
 func NewForward(uid uint, pid uint, content string) response.ResStruct {
 	var forward db.Forward
 	var post db.Post
@@ -84,7 +114,9 @@ func NewForward(uid uint, pid uint, content string) response.ResStruct {
 			HttpStatus: http.StatusOK,
 			Code:       response.FailCode,
 			Message:    "Already forwarded",
-			Data:       nil,
+			Data: gin.H{
+				"forward_id": forward.FID,
+			},
 		}
 	}
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -110,6 +142,29 @@ func NewForward(uid uint, pid uint, content string) response.ResStruct {
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
 		Message:    "Forward success",
+		Data: gin.H{
+			"forward_id": forward.FID,
+		},
+	}
+}
+
+func DeleteForward(uid uint, fid uint) response.ResStruct {
+	forward := db.Forward{
+		FID: fid,
+	}
+
+	err := global.MysqlDB.Where("author_user_id = ?", uid).Delete(&forward).Error
+	if err != nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+	return response.ResStruct{
+		HttpStatus: http.StatusOK,
+		Code:       response.SuccessCode,
+		Message:    "delete success",
 		Data:       nil,
 	}
 }
