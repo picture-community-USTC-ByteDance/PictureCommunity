@@ -24,6 +24,7 @@ func SetRouter() {
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())
 		p.POST("/create", middleware.AuthMiddleware, controller.CreatePostController)
+		p.POST("/delete", middleware.AuthMiddleware, controller.DeletePostController)
 		c := p.Group("/comment")
 		{
 			c.GET("/query", controller.QueryCommentController)
@@ -42,6 +43,7 @@ func SetRouter() {
 	f := r.Group("/forward")
 	{
 		f.POST("/new", middleware.AuthMiddleware, controller.NewForwardController)
+		f.POST("/delete", middleware.AuthMiddleware, controller.DeleteForwardController)
 	}
 	l := r.Group("/like")
 	{
@@ -72,6 +74,8 @@ func SetRouter() {
 		m.GET("/getIdList", controller.GetIdListController)
 		m.GET("/getDetailList", controller.GetDetailController)
 	}
+
+	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
 	r.GET("/token", controller.GetToken)
