@@ -72,8 +72,11 @@ func QueryLikeList1ByUID(uid uint, page int, pageSize int) (int64, []_response.R
 	return count, searchUsers
 }
 
-func QueryUserDetailByUID(uid uint) (db.UserDetail, error) {
-	var userDetailInDB db.UserDetail
-	err := global.MysqlDB.First(&userDetailInDB, uid).Error
-	return userDetailInDB, err
+func QueryUserDetailByUID(uid uint) (_response.UserDetail, error) {
+	var userDetail _response.UserDetail
+	err := global.MysqlDB.Model(db.UserDetail{}).
+		Select("user_detail.uid,nickname,sex,birthday,address,motto,profile,origin_profile,user.email,user.telephone").
+		Joins("inner join user on user_detail.uid = user.uid").
+		Where("user_detail.uid=?", uid).First(&userDetail).Error
+	return userDetail, err
 }

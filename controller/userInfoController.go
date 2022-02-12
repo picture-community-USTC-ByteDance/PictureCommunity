@@ -38,7 +38,6 @@ func UpdateUserDetailController(c *gin.Context) {
 		}
 	}
 	uid, _ := c.Get("uid")
-	fmt.Println(birthdayTime)
 	isOK, message := service.UpdateUserDetailService(u, birthdayTime, uid.(uint))
 	if isOK {
 		response.Success(c, nil, message)

@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 	userupdate "picture_community/dao/user"
 	"picture_community/entity/_request"
+	"picture_community/entity/_response"
 	"picture_community/entity/db"
 	"strconv"
 	"time"
@@ -92,11 +93,13 @@ func UpdateUserTelephoneService(param _request.UpdateUserTelephoneInfo, uid uint
 	}
 }
 
-func QueryMyDetailService(uid uint) (isOK bool, message string, detail db.UserDetail) {
-	userDetailInDB, err := userupdate.QueryUserDetailByUID(uid)
+func QueryMyDetailService(uid uint) (isOK bool, message string, detail _response.UserDetail) {
+	myDetail, err := userupdate.QueryUserDetailByUID(uid)
 	if err != nil {
-		return false, "查询用户信息失败", userDetailInDB
+		fmt.Println(err)
+		return false, "查询用户信息失败", myDetail
 	} else {
-		return true, "查询用户信息成功", userDetailInDB
+		myDetail.Birthday = string([]byte(myDetail.Birthday)[:10])
+		return true, "查询用户信息成功", myDetail
 	}
 }

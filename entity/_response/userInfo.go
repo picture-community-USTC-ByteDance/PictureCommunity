@@ -14,12 +14,14 @@ type UserData struct {
 }
 
 type UserDetail struct {
-	UID           uint
-	Nickname      string
-	Sex           bool //false为女  true为男
-	Birthday      string
-	Address       string
-	Motto         string
-	Profile       string //略缩图
-	OriginProfile string //详细头像url
+	UID           uint   `json:"uid"`
+	Nickname      string `json:"nickname"`
+	Sex           bool   `json:"sex"`
+	Birthday      string `json:"birthday"`
+	Address       string `json:"address"`
+	Motto         string `json:"motto"`
+	Profile       string `json:"profile"`
+	OriginProfile string `json:"origin_profile"`
+	Email         string `json:"email"`
+	Telephone     uint   `json:"telephone"`
 }
