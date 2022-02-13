@@ -7,24 +7,11 @@ import (
 	userupdate "picture_community/dao/user"
 	"picture_community/entity/_request"
 	"picture_community/entity/_response"
-	"picture_community/entity/db"
 	"strconv"
-	"time"
 )
 
-func UpdateUserDetailService(param _request.UpdateUserDetailInfo, birthday time.Time, uid uint) (isOK bool, message string) {
-
-	newUserDetail := db.UserDetail{
-		Nickname:      param.Nickname,
-		Sex:           param.Sex,
-		Birthday:      birthday,
-		Address:       param.Address,
-		Motto:         param.Motto,
-		Profile:       param.Profile,
-		OriginProfile: param.OriginProfile,
-	}
-
-	err := userupdate.UpdateUserDetailByID(uid, newUserDetail)
+func UpdateUserDetailService(updateData map[string]interface{}, uid uint) (isOK bool, message string) {
+	err := userupdate.UpdateUserDetailByID(uid, updateData)
 	if err != nil {
 		fmt.Println(err)
 		return false, "更新用户信息失败"
