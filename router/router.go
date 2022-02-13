@@ -58,16 +58,16 @@ func SetRouter() {
 		c.GET("/query", middleware.AuthMiddleware, controller.QueryCollectionController)
 		c.POST("/cancel", middleware.AuthMiddleware, controller.CancelCollectionController)
 	}
+	r.GET("/list/post", controller.UserPost)
+	r.GET("/list/collection", controller.UserCollection)
+	r.GET("/list/likepost", controller.UserLikePost) //本用户点赞过的帖子
 	u := r.Group("/list")
 	{
 		u.Use(middleware.AuthMiddleware)
 		//u.GET("/:id", controller.UserHome)
-		u.GET("/post", controller.UserPost)
 		u.GET("/follow", controller.UserFollow)
 		u.GET("/fans", controller.UserFans)
-		u.GET("/like", controller.UserPostLike)     //给本用户的帖子点赞过的用户列表
-		u.GET("/likepost", controller.UserLikePost) //本用户点赞过的帖子
-		u.GET("/collection", controller.UserCollection)
+		u.GET("/like", controller.UserPostLike) //给本用户的帖子点赞过的用户列表
 	}
 	m := r.Group("/firstpage")
 	{
