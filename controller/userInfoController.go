@@ -38,7 +38,6 @@ func UpdateUserDetailController(c *gin.Context) {
 		}
 	}
 	uid, _ := c.Get("uid")
-	fmt.Println(birthdayTime)
 	isOK, message := service.UpdateUserDetailService(u, birthdayTime, uid.(uint))
 	if isOK {
 		response.Success(c, nil, message)
@@ -109,4 +108,14 @@ func UpdateUserTelephoneController(c *gin.Context) {
 		response.Fail(c, nil, message)
 	}
 	return
+}
+
+func QueryMyDetailController(c *gin.Context) {
+	uid, _ := c.Get("uid")
+	isOK, message, detail := service.QueryMyDetailService(uid.(uint))
+	if isOK {
+		response.Success(c, detail, message)
+	} else {
+		response.Fail(c, nil, message)
+	}
 }

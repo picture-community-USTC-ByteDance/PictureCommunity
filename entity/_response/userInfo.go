@@ -12,3 +12,16 @@ type UserData struct {
 	CollectionNumber int    `json:"collection_number"`
 	ForwardNumber    int    `json:"forward_number"`
 }
+
+type UserDetail struct {
+	UID           uint   `json:"uid"`
+	Nickname      string `json:"nickname"`
+	Sex           bool   `json:"sex"`
+	Birthday      string `json:"birthday"`
+	Address       string `json:"address"`
+	Motto         string `json:"motto"`
+	Profile       string `json:"profile"`
+	OriginProfile string `json:"origin_profile"`
+	Email         string `json:"email"`
+	Telephone     uint   `json:"telephone"`
+}
