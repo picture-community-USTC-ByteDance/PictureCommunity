@@ -12,6 +12,7 @@ func UserPost(u _request.UserHomeRequest) (int64, int, []_response.ResponseHomeP
 
 	count, followList := post.QueryHomePostListByUID(u.Uid, u.Page, u.PageSize)
 
+
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
 	return count, totalPage, followList
@@ -44,18 +45,22 @@ func UserPostLike(u _request.UserHomeRequest) (int64, int, []_response.ResponseS
 	return count, totalPage, likeList
 }
 
+
 func UserLikePost(u _request.UserHomeRequest) (int64, int, []_response.ResponseHomePost) {
 
 	count, likePostList := post.QueryLikePostByUID(u.Uid, u.Page, u.PageSize)
+
 
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
 	return count, totalPage, likePostList
 }
 
+
 func UserCollection(u _request.UserHomeRequest) (int64, int, []_response.ResponseHomePost) {
 
 	count, collectionList := post.QueryHomeCollectionListByUID(u.Uid, u.Page, u.PageSize)
+
 
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
