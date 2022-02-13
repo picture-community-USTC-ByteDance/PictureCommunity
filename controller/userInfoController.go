@@ -44,11 +44,9 @@ func UpdateUserDetailController(c *gin.Context) {
 		response.CheckFail(c, nil, "更新用户信息参数错误")
 		return
 	}
-	fmt.Printf("%v \n", &updateData)
 	checkTemp := reflect.TypeOf(u)
 	for k := range updateData {
 		fieldName := strFirstToUpper(k)
-		fmt.Println(fieldName)
 		if _, ok := checkTemp.FieldByName(fieldName); !ok {
 			response.CheckFail(c, nil, "更新用户信息参数错误")
 			return
