@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"picture_community/entity/_response"
 	"picture_community/entity/db"
 	"picture_community/global"
@@ -11,10 +12,26 @@ func QueryUserDataByUserID(uid uint) (error, _response.UserData) {
 	var userdata _response.UserData
 	// 在db.UserData{}数据库中查询，查询结果保存到结构体变量userdata中
 	err := global.MysqlDB.Model(db.UserData{}).
-		Select("nickname,sex,profile,motto,followers_number,fans_number,posts_number,collection_number,forward_number").
-		Joins("inner join user_detail on user_data.uid = user_detail.uid").
-		Where("user_detail.uid=?", uid).Scan(&userdata).Error
+		Select("nickname,user.username,sex,profile,motto,followers_number,fans_number,posts_number,collection_number,forward_number").
+		Joins("left join user_detail on user_data.uid = user_detail.uid").
+		Joins("left join user on user.uid = user_data.uid").
+		Where("user_data.uid=?", uid).Scan(&userdata).Error
 
+	fmt.Println(userdata)
+	return err, userdata
+}
+
+// 根据username查其他用户的信息
+func QueryUserDataByUsername(username string) (error, _response.UserData) {
+	var userdata _response.UserData
+
+	err := global.MysqlDB.Model(db.User{}).
+		Select("nickname,user.username,sex,profile,motto,followers_number,fans_number,posts_number,collection_number,forward_number").
+		Joins("left join user_detail on user.uid = user_detail.uid").
+		Joins("left join user_data on user.uid = user_data.uid").
+		Where("user.username=?", username).Scan(&userdata).Error
+
+	fmt.Println(userdata)
 	return err, userdata
 }
 

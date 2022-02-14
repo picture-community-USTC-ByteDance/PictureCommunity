@@ -38,7 +38,8 @@ func SetRouter() {
 	q := r.Group("/query")
 	{
 		q.GET("/userData", middleware.AuthMiddleware, controller.QueryUserData)
-		q.GET("/userDetail", middleware.AuthMiddleware, controller.QueryUserPosts)
+		q.GET("/userDataByUsername", middleware.AuthMiddleware, controller.QueryUserDataByUsername)
+		q.GET("/userPosts", middleware.AuthMiddleware, controller.QueryUserPosts)
 	}
 	f := r.Group("/forward")
 	{
