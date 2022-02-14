@@ -31,12 +31,13 @@ func QueryUserDataByUsername(c *gin.Context) {
 		response.Fail(c, nil, "请求错误")
 		return
 	}
+	uid, _ := c.Get("uid")
 
-	err, res := service.GetUserDataByUsername(u.Username) // 实际业务处理函数
+	err, res, isFollow, isFan := service.GetUserDataByUsername(u.Username, uid.(uint)) // 实际业务处理函数
 	if err != nil {
 		response.Fail(c, nil, "根据username查用户信息失败")
 	} else {
-		response.Success(c, gin.H{"userdata": res}, "ok")
+		response.Success(c, gin.H{"userdata": res, "isFollow": isFollow, "isFan": isFan}, "ok")
 	}
 }
 
