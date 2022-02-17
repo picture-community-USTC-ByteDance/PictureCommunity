@@ -13,15 +13,19 @@ func CreateCollection(u_id uint, post_id uint) bool {
 		State: true,
 	}
 
-	id, state, _ := post.QueryCollectionByUserID(u_id, post_id)
-	if id == 0 {
+	id, state, err := post.QueryCollectionByUserID(u_id, post_id)
+	if err != nil { //没有该帖子
+		return false
+	}
+
+	if id == 0 { //没有该收藏的记录
 		_, err := post.InsertCollectionByUserID(newCollection)
 		if err != nil {
 			return false
 		}
 		return true
 	}
-	if state != true {
+	if state != true { //有该收藏的记录
 		_, err := post.UpdateCollectionByUserID(id, true)
 		if err != nil {
 			return false
