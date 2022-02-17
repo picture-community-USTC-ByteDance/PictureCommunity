@@ -10,7 +10,7 @@ import (
 func QueryDetailById(pid uint) response.ResPost {
 	var res response.ResPost
 	global.MysqlDB.Table("user_detail a").Debug().
-		Select("a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.comment_number").
+		Select("a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.comment_number,b.create_time").
 		Joins("INNER JOIN `post` b ON b.p_id  = ?  and a.uid = b.uid", pid).
 		Scan(&res)
 	return res

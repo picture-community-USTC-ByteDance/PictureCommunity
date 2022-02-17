@@ -72,8 +72,8 @@ func SetRouter() {
 	m := r.Group("/firstpage")
 	{
 
-		m.GET("/getIdList", controller.GetIdListController)
-		m.GET("/getDetailList", controller.GetDetailController)
+		m.GET("/getIdList", controller.GetIdListController)     //获取关注的人的帖子和转发ID
+		m.GET("/getDetailList", controller.GetDetailController) //根据ID获取关注的人的帖子信息
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
