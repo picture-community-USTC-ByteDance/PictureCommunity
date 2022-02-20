@@ -3,6 +3,7 @@ package _response
 import "time"
 
 type QueryCommentBack struct {
+
 	UserID   int    `json:"userId"`
 	NickName string `json:"nickName"`
 	//	Profile     string //头像略缩图
@@ -10,6 +11,7 @@ type QueryCommentBack struct {
 	Content     string //内容
 }
 type QueryCommentBackTemp struct {
+
 	CID         uint `form:"c_id" json:"c_id" binding:"required"` //评论id
 	UserID      uint //(评论)用户id
 	NickName    string
