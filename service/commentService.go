@@ -17,11 +17,11 @@ func QueryCommentService2(comment _request.QueryComment2) (error, []_response.Qu
 	return err, back
 }
 func CreateFirstLevelCommentService(comment _request.CreateFirstLevelComment) (err error, back _response.CreateFirstLevelCommentBack) {
-	err, back = post.CreateFirstLevelCommentDAO(comment.UID, comment.PID, comment.Content)
+	err, back = post.CreateFirstLevelCommentDAO(comment.UserID, comment.PID, comment.Content, comment.Nickname, comment.Profile)
 	return
 }
 func CreateSecondLevelCommentService(comment _request.CreateSecondLevelComment) (err error, back _response.CreateSecondLevelCommentBack) {
-	err, back = post.CreateSecondLevelCommentDAO(comment.UID, comment.PID, comment.ParentId, comment.Content)
+	err, back = post.CreateSecondLevelCommentDAO(comment.UserID, comment.PID, comment.ParentId, comment.Content, comment.Nickname, comment.Profile)
 	return
 }
 func DeleteCommentService(comment _request.DeleteComment) (err error) {

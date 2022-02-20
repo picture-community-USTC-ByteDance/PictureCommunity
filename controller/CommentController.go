@@ -36,6 +36,7 @@ func AddSecondLevelCommentController(c *gin.Context) {
 	}
 }
 
+//查询一级评论
 func QueryCommentController(c *gin.Context) {
 	var u _request.QueryComment
 	if err := c.ShouldBind(&u); err != nil {
@@ -46,10 +47,11 @@ func QueryCommentController(c *gin.Context) {
 	if err != nil {
 		response.Fail(c, nil, "评论返回失败")
 	} else {
-		response.Success(c, res, "返回评论成功")
+		response.Success(c, res, "返回一级评论成功")
 	}
 }
 
+//查询二级评论
 func QueryCommentController2(c *gin.Context) {
 	var u _request.QueryComment2
 	if err := c.ShouldBind(&u); err != nil {
@@ -60,7 +62,8 @@ func QueryCommentController2(c *gin.Context) {
 	if err != nil {
 		response.Fail(c, nil, "评论返回失败")
 	} else {
-		response.Success(c, res, "返回评论成功")
+		response.Success(c, res, "返回二级评论成功")
+
 	}
 }
 
