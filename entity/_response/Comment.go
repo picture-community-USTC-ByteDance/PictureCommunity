@@ -3,6 +3,7 @@ package _response
 import "time"
 
 type QueryCommentBack struct {
+
 	UserID   int    `json:"userId"`
 	NickName string `json:"nickName"`
 	//	Profile     string //头像略缩图
@@ -10,6 +11,7 @@ type QueryCommentBack struct {
 	Content     string //内容
 }
 type QueryCommentBackTemp struct {
+
 	CID         uint `form:"c_id" json:"c_id" binding:"required"` //评论id
 	UserID      uint //(评论)用户id
 	NickName    string
@@ -32,6 +34,13 @@ type QueryCommentBackTemp2 struct {
 	LikeNumber uint      //评论的点赞数
 	LikeStatus bool      //true表示已点赞
 	ParentId   uint      `form:"parentid" json:"parentid"`
+
+}
+type QueryCommentBackTemp2 struct {
+	//	ChildNumber int    //子评论个数
+	LikeNumber int
+	Content    string //内容
+	UserID     uint   //评论作者id
 }
 type CreateFirstLevelCommentBack struct {
 	PID     uint   `json:"post_id"`

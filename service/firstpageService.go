@@ -38,6 +38,7 @@ func GetPostDetail(uid uint, page int, pageSize int) (bool, []response.ResPost) 
 	index := 0
 	for _, value := range postIdList {
 		temp := firstpage.QueryDetailById(value)
+		temp.PID = value
 		commentIdList := firstpage.QueryCommentIdById(value)
 		var com []response.ResComment = make([]response.ResComment, len(commentIdList))
 		cindex := 0

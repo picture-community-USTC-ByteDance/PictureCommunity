@@ -5,8 +5,8 @@ import (
 	"picture_community/global"
 )
 
-func UpdateUserDetailByID(uid uint, userDetail db.UserDetail) error {
-	err := global.MysqlDB.Model(&userDetail).Where("uid = ?", uid).Updates(userDetail).Error
+func UpdateUserDetailByID(uid uint, updateData map[string]interface{}) error {
+	err := global.MysqlDB.Model(&db.UserDetail{}).Where("uid = ?", uid).Updates(updateData).Error
 	return err
 }
 
