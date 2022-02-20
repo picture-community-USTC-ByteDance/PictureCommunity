@@ -15,13 +15,21 @@ func CreatePostController(c *gin.Context) {
 		response.CheckFail(c, nil, "Invalid parameter")
 		return
 	}
-	file, err := c.FormFile("pic")
+
+	uid, _ := c.Get("uid")
+	res := service.CreatePost(c, uid.(uint), u.Url, u.Content)
+	response.HandleResponse(c, res)
+}
+
+func DeletePostController(c *gin.Context) {
+	var u _request.DeletePost
+	err := c.ShouldBind(&u)
 	if err != nil {
-		response.CheckFail(c, nil, "File not found")
+		response.CheckFail(c, nil, "Invalid parameter")
 		return
 	}
 	uid, _ := c.Get("uid")
-	res := service.CreatePost(c, uid.(uint), file, u.Content)
+	res := service.DeletePost(uid.(uint), u.PID)
 	response.HandleResponse(c, res)
 }
 
@@ -34,5 +42,17 @@ func NewForwardController(c *gin.Context) {
 	}
 	uid, _ := c.Get("uid")
 	res := service.NewForward(uid.(uint), u.PID, u.Content)
+	response.HandleResponse(c, res)
+}
+
+func DeleteForwardController(c *gin.Context) {
+	var u _request.DeleteForward
+	err := c.ShouldBind(&u)
+	if err != nil {
+		response.CheckFail(c, nil, "Invalid parameter")
+		return
+	}
+	uid, _ := c.Get("uid")
+	res := service.DeleteForward(uid.(uint), u.FID)
 	response.HandleResponse(c, res)
 }

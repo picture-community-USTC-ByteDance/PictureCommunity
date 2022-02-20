@@ -21,14 +21,30 @@ func QueryUserData(c *gin.Context) {
 	} else {
 		response.Success(c, gin.H{"userdata": res}, "ok")
 	}
+}
 
-	//response.HandleResponse(c, res)
+// 根据唯一的username获取指定用户的个人信息
+func QueryUserDataByUsername(c *gin.Context) {
+	var u _request.UserInfo
 
+	if err := c.ShouldBind(&u); err != nil {
+		response.Fail(c, nil, "请求错误")
+		return
+	}
+	uid, _ := c.Get("uid")
+
+	err, res, isFollow, isFan := service.GetUserDataByUsername(u.Username, uid.(uint)) // 实际业务处理函数
+	if err != nil {
+		response.Fail(c, nil, "根据username查用户信息失败")
+	} else {
+		response.Success(c, gin.H{"userdata": res, "isFollow": isFollow, "isFan": isFan}, "ok")
+	}
 }
 
 // 获取用户自己个人主页的帖子数组信息
 func QueryUserPosts(c *gin.Context) {
 	var u _request.UserPosts
+
 	if err := c.ShouldBind(&u); err != nil {
 		response.Fail(c, nil, "请求错误")
 		return
@@ -43,15 +59,11 @@ func QueryUserPosts(c *gin.Context) {
 		response.Fail(c, nil, "用户不存在！")
 	}
 
-	err, count, totalPage, res := service.GetUserPosts(uid.(uint), u) // 实际处理业务逻辑的函数
+	count, totalPage, userPosts := service.GetUserPosts(uid.(uint), u) // 实际处理业务逻辑的函数
+
 	if count == 0 {
 		response.Success(c, nil, "当前未发表帖子")
-	}
-	if err != nil {
-		response.Fail(c, nil, "查看用户主页帖子数组失败")
 	} else {
-		response.Success(c, gin.H{"totalpage": totalPage, "userposts": res}, "ok")
+		response.Success(c, gin.H{"totalpage": totalPage, "userPosts": userPosts}, "ok")
 	}
-
-	//response.HandleResponse(c, res)
 }

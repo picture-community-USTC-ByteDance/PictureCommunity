@@ -63,6 +63,7 @@ func QueryCommentController2(c *gin.Context) {
 		response.Fail(c, nil, "评论返回失败")
 	} else {
 		response.Success(c, res, "返回二级评论成功")
+
 	}
 }
 

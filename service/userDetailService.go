@@ -6,24 +6,12 @@ import (
 	"gorm.io/gorm"
 	userupdate "picture_community/dao/user"
 	"picture_community/entity/_request"
-	"picture_community/entity/db"
+	"picture_community/entity/_response"
 	"strconv"
-	"time"
 )
 
-func UpdateUserDetailService(param _request.UpdateUserDetailInfo, birthday time.Time, uid uint) (isOK bool, message string) {
-
-	newUserDetail := db.UserDetail{
-		Nickname:      param.Nickname,
-		Sex:           param.Sex,
-		Birthday:      birthday,
-		Address:       param.Address,
-		Motto:         param.Motto,
-		Profile:       param.Profile,
-		OriginProfile: param.OriginProfile,
-	}
-
-	err := userupdate.UpdateUserDetailByID(uid, newUserDetail)
+func UpdateUserDetailService(updateData map[string]interface{}, uid uint) (isOK bool, message string) {
+	err := userupdate.UpdateUserDetailByID(uid, updateData)
 	if err != nil {
 		fmt.Println(err)
 		return false, "更新用户信息失败"
@@ -89,5 +77,16 @@ func UpdateUserTelephoneService(param _request.UpdateUserTelephoneInfo, uid uint
 		return false, "电话号码更新失败"
 	} else {
 		return true, "电话号码更新成功"
+	}
+}
+
+func QueryMyDetailService(uid uint) (isOK bool, message string, detail _response.UserDetail) {
+	myDetail, err := userupdate.QueryUserDetailByUID(uid)
+	if err != nil {
+		fmt.Println(err)
+		return false, "查询用户信息失败", myDetail
+	} else {
+		myDetail.Birthday = string([]byte(myDetail.Birthday)[:10])
+		return true, "查询用户信息成功", myDetail
 	}
 }

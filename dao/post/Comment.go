@@ -11,9 +11,11 @@ import (
 func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBackTemp) {
 	var coms []_response.QueryCommentBackTemp
 	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = 0", postid).Offset(page - 1).Limit(pagesize).Find(&coms).Error
+
 	fmt.Println(coms)
 	return err, coms
 }
+
 func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2) {
 	var coms []_response.QueryCommentBackTemp2
 	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = ?", postid, parent_id).Offset(page - 1).Limit(pagesize).Find(&coms).Error

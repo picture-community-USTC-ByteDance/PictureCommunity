@@ -28,7 +28,7 @@ type QueryComment struct {
 
 type QueryComment2 struct {
 	PID      uint `form:"p_id" json:"p_id" binding:"required"`
-	ParentId uint `form:"parent_id" json:"parent_id" binding:"required"`
+	ParentId uint `form:"parentid" json:"parentid"`
 	PageSize int  `form:"pagesize"  binding:"required"`
 	Page     int  `form:"page"  binding:"required"`
 }

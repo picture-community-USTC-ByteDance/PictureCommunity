@@ -33,6 +33,7 @@ type QueryCommentBackTemp2 struct {
 	LikeStatus bool      //true表示已点赞
 	ParentId   uint      `form:"parentid" json:"parentid"`
 }
+
 type CreateFirstLevelCommentBack struct {
 	PID     uint   `json:"post_id"`
 	Content string //评论内容

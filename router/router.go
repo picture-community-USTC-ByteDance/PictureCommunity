@@ -20,10 +20,12 @@ func SetRouter() {
 		g.POST("/updateUserDetail", middleware.AuthMiddleware, controller.UpdateUserDetailController)
 		g.POST("/updateUserEmail", middleware.AuthMiddleware, controller.UpdateUserEmailController)
 		g.POST("/updateUserTelephone", middleware.AuthMiddleware, controller.UpdateUserTelephoneController)
+		g.GET("/queryMyDetail", middleware.AuthMiddleware, controller.QueryMyDetailController)
 	}
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())
 		p.POST("/create", middleware.AuthMiddleware, controller.CreatePostController)
+		p.POST("/delete", middleware.AuthMiddleware, controller.DeletePostController)
 		c := p.Group("/comment")
 		{
 			c.GET("/query", controller.QueryCommentController)
@@ -37,11 +39,13 @@ func SetRouter() {
 	q := r.Group("/query")
 	{
 		q.GET("/userData", middleware.AuthMiddleware, controller.QueryUserData)
-		q.GET("/userDetail", middleware.AuthMiddleware, controller.QueryUserPosts)
+		q.GET("/userDataByUsername", middleware.AuthMiddleware, controller.QueryUserDataByUsername)
+		q.GET("/userPosts", middleware.AuthMiddleware, controller.QueryUserPosts)
 	}
 	f := r.Group("/forward")
 	{
 		f.POST("/new", middleware.AuthMiddleware, controller.NewForwardController)
+		f.POST("/delete", middleware.AuthMiddleware, controller.DeleteForwardController)
 	}
 	l := r.Group("/like")
 	{
@@ -55,23 +59,25 @@ func SetRouter() {
 		c.GET("/query", middleware.AuthMiddleware, controller.QueryCollectionController)
 		c.POST("/cancel", middleware.AuthMiddleware, controller.CancelCollectionController)
 	}
+	r.GET("/list/post", controller.UserPost)
+	r.GET("/list/collection", controller.UserCollection)
+	r.GET("/list/likepost", controller.UserLikePost) //本用户点赞过的帖子
 	u := r.Group("/list")
 	{
 		u.Use(middleware.AuthMiddleware)
 		//u.GET("/:id", controller.UserHome)
-		u.GET("/post", controller.UserPost)
 		u.GET("/follow", controller.UserFollow)
 		u.GET("/fans", controller.UserFans)
-		u.GET("/like", controller.UserPostLike)     //给本用户的帖子点赞过的用户列表
-		u.GET("/likepost", controller.UserLikePost) //本用户点赞过的帖子
-		u.GET("/collection", controller.UserCollection)
+		u.GET("/like", controller.UserPostLike) //给本用户的帖子点赞过的用户列表
 	}
 	m := r.Group("/firstpage")
 	{
 
-		m.GET("/getIdList", controller.GetIdListController)
-		m.GET("/getDetailList", controller.GetDetailController)
+		m.GET("/getIdList", controller.GetIdListController)     //获取关注的人的帖子和转发ID
+		m.GET("/getDetailList", controller.GetDetailController) //根据ID获取关注的人的帖子信息
 	}
+
+	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
 	r.StaticFS("/upload/pictures", http.Dir("./storage"))
 
 	r.GET("/token", controller.GetToken)
