@@ -10,4 +10,5 @@ func IdGeneratorInitialize() {
 	global.PostIDGenerator = utils.NewIDGenerator(0, 2)
 	global.ForwardIDGenerator = utils.NewIDGenerator(0, 1)
 	global.UserIDGenerator = utils.NewIDGenerator(0, 0)
+	global.PostPhotoIDGenerator = utils.NewIDGenerator(0, 4)
 }
