@@ -42,7 +42,7 @@ func QueryFollowListByUID(uid uint, page int, pageSize int) (int64, []_response.
 	global.MysqlDB.Model(db.Follow{}).
 		Select("profile,user_detail.uid,nickname,motto").
 		Joins("inner join user_detail on follow.followed_id = user_detail.uid").
-		Where("follow.uid = ?", uid).Count(&count).
+		Where("follow.uid = ? AND follow.state= ?", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
 }
@@ -54,7 +54,7 @@ func QueryFansListByUID(uid uint, page int, pageSize int) (int64, []_response.Re
 	global.MysqlDB.Model(db.Fans{}).
 		Select("profile,user_detail.uid,nickname,motto").
 		Joins("inner join user_detail on fans.fans_id = user_detail.uid").
-		Where("fans.uid = ?", uid).Count(&count).
+		Where("fans.uid = ? AND fans.state= ?", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
 }
@@ -67,7 +67,7 @@ func QueryLikeList1ByUID(uid uint, page int, pageSize int) (int64, []_response.R
 		Select("profile,user_detail.uid,nickname,motto").
 		Joins("inner join liked on post.p_id = liked.to_like_post_id").
 		Joins("inner join user_detail on liked.from_user_id = user_detail.uid").
-		Where("post.uid= ?", uid).Count(&count).
+		Where("post.uid= ? AND liked.state=? ", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
 }
