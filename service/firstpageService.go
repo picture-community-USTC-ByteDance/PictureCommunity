@@ -53,3 +53,10 @@ func GetPostDetail(uid uint, page int, pageSize int) (bool, []response.ResPost) 
 	}
 	return true, res
 }
+
+func GetSingleDetail(uid uint, pid uint) response.ResSinglePost {
+	post := firstpage.QuerySingleDetailById(pid)
+	post.PID = pid
+	post.Is_like = firstpage.QueryIsLiked(pid, uid)
+	return post
+}
