@@ -19,7 +19,7 @@ func QueryHomeCollectionListByUID(uid uint, page int, pageSize int) (int64, []_r
 		Select("post.p_id,title_photo_url,comment_number,like_number").
 		Joins("inner join post on post.p_id = collection.p_id").
 		Where("collection.uid= ?", uid).Count(&count).
-		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&responsePost)
+		Offset((page - 1) * pageSize).Limit(pageSize).Order("collection.create_time desc").Scan(&responsePost)
 	return count, responsePost
 }
 
@@ -31,7 +31,7 @@ func QueryLikePostByUID(uid uint, page int, pageSize int) (int64, []_response.Re
 		Select("post.p_id,title_photo_url,comment_number,like_number").
 		Joins("inner join post on post.p_id = liked.to_like_post_id").
 		Where("liked.from_user_id= ?", uid).Count(&count).
-		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
+		Offset((page - 1) * pageSize).Limit(pageSize).Order("liked.create_time desc").Scan(&searchUsers)
 	return count, searchUsers
 }
 
@@ -42,7 +42,7 @@ func QueryHomePostListByUID(uid uint, page int, pageSize int) (int64, []_respons
 	global.MysqlDB.Model(&db.Post{}).
 		Select("p_id,title_photo_url,comment_number,like_number").
 		Where("uid = ?", uid).Count(&count).
-		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&homePostList)
+		Offset((page - 1) * pageSize).Limit(pageSize).Order("post.create_time desc").Scan(&homePostList)
 
 	return count, homePostList
 }
