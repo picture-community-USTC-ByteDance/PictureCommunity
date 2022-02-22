@@ -47,3 +47,19 @@ func VerifyLogin(param _request.LoginUser) (isValid bool, message string, token 
 	}
 	return
 }
+
+func ModifyPassword(uid uint, u _request.ModifyPasswd) (bool, string) {
+	passwd, err := user.QueryPasswordByID(uid)
+	if err != nil {
+		return false, "用户不存在"
+	}
+	if passwd != u.OldPassword {
+		return false, "密码错误"
+	}
+
+	if user.UpdatePasswordByID(uid, u.NewPassword) != nil {
+		return false, "更新错误"
+	}
+
+	return true, "更新成功"
+}

@@ -23,6 +23,7 @@ func SetRouter() {
 		g.GET("/queryMyDetail", middleware.AuthMiddleware, controller.QueryMyDetailController)
 		g.POST("/followUser", middleware.AuthMiddleware, controller.UserFollowController)
 		g.POST("/unfollowUser", middleware.AuthMiddleware, controller.UserUnfollowController)
+		g.POST("/updatePassword", middleware.AuthMiddleware, controller.UpdatePassword)
 	}
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())

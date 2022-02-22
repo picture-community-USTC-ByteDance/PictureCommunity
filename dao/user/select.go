@@ -6,6 +6,12 @@ import (
 	"picture_community/global"
 )
 
+func QueryPasswordByID(id uint) (string, error) {
+	var password string
+	err := global.MysqlDB.Model(db.User{}).Select("password").Where("uid=?", id).Find(&password).Error
+	return password, err
+}
+
 func QueryIDAndPasswordByUsername(username string) (int64, string, error) {
 	var user db.User
 	err := global.MysqlDB.Select("uid", "password").Where("username=?", username).First(&user).Error
