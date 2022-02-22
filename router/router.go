@@ -41,8 +41,7 @@ func SetRouter() {
 	q := r.Group("/query")
 	{
 		q.GET("/userData", middleware.AuthMiddleware, controller.QueryUserData)
-		q.GET("/userDataByUsername", middleware.AuthMiddleware, controller.QueryUserDataByUsername)
-		q.GET("/userPosts", middleware.AuthMiddleware, controller.QueryUserPosts)
+		q.GET("/userDetail", middleware.AuthMiddleware, controller.QueryUserPosts)
 	}
 	f := r.Group("/forward")
 	{
@@ -77,6 +76,7 @@ func SetRouter() {
 
 		m.GET("/getIdList", controller.GetIdListController)     //获取关注的人的帖子和转发ID
 		m.GET("/getDetailList", controller.GetDetailController) //根据ID获取关注的人的帖子信息
+		m.GET("/getDetail", controller.GetSinglePost)           //根据帖子ID获取对应帖子详情
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
