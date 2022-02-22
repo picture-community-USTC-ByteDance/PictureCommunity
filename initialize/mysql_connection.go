@@ -1,8 +1,10 @@
 package initialize
 
 import (
+	"fmt"
 	"picture_community/entity/db"
 	"picture_community/global"
+	"picture_community/utils"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -10,11 +12,16 @@ import (
 )
 
 func MysqlDateBaseInit() error {
-	database, err := gorm.Open(mysql.Open(global.DbUrl), &gorm.Config{
+	dbUrl := utils.GetDbUrl()
+	fmt.Println("using DATABASE: ", dbUrl)
+	database, err := gorm.Open(mysql.Open(dbUrl), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			SingularTable: true,
 		},
 	})
+	if err != nil {
+		return err
+	}
 
 	database.AutoMigrate(&db.Post{})
 	database.AutoMigrate(&db.UserDetail{})
