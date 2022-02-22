@@ -8,6 +8,10 @@ import (
 )
 
 func GetIdListController(c *gin.Context) {
+	uid, exists := c.Get("uid")
+	if exists == false {
+		response.Fail(c, nil, "用户不存在！")
+	}
 	var u _request.Firstpage
 	if err := c.ShouldBind(&u); err != nil {
 		response.Fail(c, nil, "请求错误")
@@ -17,7 +21,7 @@ func GetIdListController(c *gin.Context) {
 		response.CheckFail(c, nil, "页码或数量有误")
 		return
 	}
-	isOk, IdList := service.GetPostIdList(u.Uid, u.Page, u.PageSize)
+	isOk, IdList := service.GetPostIdList(uid.(uint), u.Page, u.PageSize)
 	if isOk {
 		response.Success(c, IdList, "获取成功")
 	} else {
@@ -25,6 +29,10 @@ func GetIdListController(c *gin.Context) {
 	}
 }
 func GetDetailController(c *gin.Context) {
+	uid, exists := c.Get("uid")
+	if exists == false {
+		response.Fail(c, nil, "用户不存在！")
+	}
 	var u _request.Firstpage
 	if err := c.ShouldBind(&u); err != nil {
 		response.Fail(c, nil, "请求错误")
@@ -34,7 +42,7 @@ func GetDetailController(c *gin.Context) {
 		response.CheckFail(c, nil, "页码或数量有误")
 		return
 	}
-	isOk, postList := service.GetPostDetail(u.Uid, u.Page, u.PageSize)
+	isOk, postList := service.GetPostDetail(uid.(uint), u.Page, u.PageSize)
 	if isOk {
 		response.Success(c, postList, "获取成功")
 	} else {

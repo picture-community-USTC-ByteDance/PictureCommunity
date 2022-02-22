@@ -8,19 +8,21 @@ import (
 	"picture_community/global"
 )
 
-func QueryFirstCommentDAO(pagesize int, page int, postid int) (error, []_response.QueryCommentBackTemp) {
+func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBackTemp) {
 	var coms []_response.QueryCommentBackTemp
 	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = 0", postid).Offset(page - 1).Limit(pagesize).Find(&coms).Error
+
 	fmt.Println(coms)
 	return err, coms
 }
-func QuerySecondCommentDAO(pagesize int, page int, postid int, parent_id int) (error, []_response.QueryCommentBackTemp2) {
+
+func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2) {
 	var coms []_response.QueryCommentBackTemp2
 	err := global.MysqlDB.Debug().Model(&db.Comment{}).Where("post_id = ? AND parent_id = ?", postid, parent_id).Offset(page - 1).Limit(pagesize).Find(&coms).Error
 	fmt.Println(coms)
 	return err, coms
 }
-func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
+func CreateFirstLevelCommentDAO(userid uint, postid uint, content string, nickname string, profile string) (error, _response.CreateFirstLevelCommentBack) {
 	var com db.Comment
 	//自动生成comment的id
 	//com.CID = 100
@@ -31,6 +33,8 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	com.ChildNumber = 0
 	com.LikeNumber = 0
 	com.DeleteStatus = false
+	com.Profile = profile
+	com.NickName = nickname
 	result := global.MysqlDB.Debug().Create(&com)
 	err := result.Error
 	var re _response.CreateFirstLevelCommentBack
@@ -47,7 +51,7 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	}
 	return err, re
 }
-func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, _response.CreateSecondLevelCommentBack) {
+func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string, nickname string, profile string) (error, _response.CreateSecondLevelCommentBack) {
 	var com db.Comment
 	//自动生成comment的id
 	//com.CID=0
@@ -58,6 +62,8 @@ func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, conten
 	com.ChildNumber = 0
 	com.LikeNumber = 0
 	com.DeleteStatus = false
+	com.Profile = profile
+	com.NickName = nickname
 	result := global.MysqlDB.Debug().Create(&com)
 	err := result.Error
 	var re _response.CreateSecondLevelCommentBack
