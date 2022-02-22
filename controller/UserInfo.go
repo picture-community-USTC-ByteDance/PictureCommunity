@@ -21,7 +21,24 @@ func QueryUserData(c *gin.Context) {
 	} else {
 		response.Success(c, gin.H{"userdata": res}, "ok")
 	}
+}
 
+// 根据唯一的username获取指定用户的个人信息
+func QueryUserDataByUsername(c *gin.Context) {
+	var u _request.UserInfo
+
+	if err := c.ShouldBind(&u); err != nil {
+		response.Fail(c, nil, "请求错误")
+		return
+	}
+	uid, _ := c.Get("uid")
+
+	err, res, isFollow, isFan := service.GetUserDataByUsername(u.Username, uid.(uint)) // 实际业务处理函数
+	if err != nil {
+		response.Fail(c, nil, "根据username查用户信息失败")
+	} else {
+		response.Success(c, gin.H{"userdata": res, "isFollow": isFollow, "isFan": isFan}, "ok")
+	}
 }
 
 // 获取用户自己个人主页的帖子数组信息

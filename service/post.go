@@ -5,7 +5,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path"
-	"picture_community/dao/post"
 	"picture_community/entity/db"
 	"picture_community/global"
 	"picture_community/response"
@@ -46,19 +45,34 @@ func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.Re
 	}
 }
 
-func CreatePost(c *gin.Context, id uint, url string, content string) response.ResStruct {
+func CreatePost(c *gin.Context, id uint, urls []string, content string) response.ResStruct {
+	len := len(urls)
+	if len <= 0 || len > 10 {
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    "number of photos cannot exceed 10 per post",
+			Data:       nil,
+		}
+	}
+
+	tx := global.MysqlDB.Begin()
+
 	newPost := db.Post{
+		PID:              global.PostIDGenerator.NewID(),
 		UID:              id,
-		TitlePhotoUrl:    url,
+		TitlePhotoUrl:    urls[0],
 		Content:          content,
-		PhotoNumber:      1,
+		PhotoNumber:      len,
 		CommentNumber:    0,
 		LikeNumber:       0,
 		ForwardNumber:    0,
 		CollectionNumber: 0,
 	}
-	postID, err := post.InsertPostByUserID(newPost)
+	err := tx.Create(&newPost).Error
+	postID := newPost.PID
 	if err != nil {
+		tx.Rollback()
 		return response.ResStruct{
 			HttpStatus: http.StatusGatewayTimeout,
 			Code:       response.FailCode,
@@ -66,6 +80,30 @@ func CreatePost(c *gin.Context, id uint, url string, content string) response.Re
 			Data:       nil,
 		}
 	}
+
+	postPhoto := db.PostPhoto{
+		PID:          postID,
+		UID:          id,
+		Url:          urls[0],
+		SerialNumber: 0,
+	}
+	for i, url := range urls {
+		postPhoto.SerialNumber = uint(i)
+		postPhoto.Url = url
+		postPhoto.ID = global.PostIDGenerator.NewID()
+		err = tx.Create(&postPhoto).Error
+		if err != nil {
+			tx.Rollback()
+			return response.ResStruct{
+				HttpStatus: http.StatusGatewayTimeout,
+				Code:       response.FailCode,
+				Message:    err.Error(),
+				Data:       nil,
+			}
+		}
+	}
+
+	tx.Commit()
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,

@@ -21,6 +21,8 @@ func SetRouter() {
 		g.POST("/updateUserEmail", middleware.AuthMiddleware, controller.UpdateUserEmailController)
 		g.POST("/updateUserTelephone", middleware.AuthMiddleware, controller.UpdateUserTelephoneController)
 		g.GET("/queryMyDetail", middleware.AuthMiddleware, controller.QueryMyDetailController)
+		g.POST("/followUser", middleware.AuthMiddleware, controller.UserFollowController)
+		g.POST("/unfollowUser", middleware.AuthMiddleware, controller.UserUnfollowController)
 	}
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())
@@ -72,8 +74,9 @@ func SetRouter() {
 	m := r.Group("/firstpage")
 	{
 
-		m.GET("/getIdList", controller.GetIdListController)
-		m.GET("/getDetailList", controller.GetDetailController)
+		m.GET("/getIdList", controller.GetIdListController)     //获取关注的人的帖子和转发ID
+		m.GET("/getDetailList", controller.GetDetailController) //根据ID获取关注的人的帖子信息
+		m.GET("/getDetail", controller.GetSinglePost)           //根据帖子ID获取对应帖子详情
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)

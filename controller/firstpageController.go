@@ -41,3 +41,21 @@ func GetDetailController(c *gin.Context) {
 		response.Success(c, nil, "该用户没有关注任何人")
 	}
 }
+
+func GetSinglePost(c *gin.Context) {
+	var u _request.SinglePost
+	if err := c.ShouldBind(&u); err != nil {
+		response.Fail(c, nil, "请求错误")
+		return
+	}
+	if u.Pid <= 0 {
+		response.CheckFail(c, nil, "帖子id出错")
+		return
+	}
+	if u.Uid <= 0 {
+		response.CheckFail(c, nil, "用户id出错")
+		return
+	}
+	post := service.GetSingleDetail(u.Uid, u.Pid)
+	response.Success(c, post, "获取成功")
+}
