@@ -103,6 +103,8 @@ func CreatePost(c *gin.Context, id uint, urls []string, content string) response
 		}
 	}
 
+	tx.Model(&db.UserData{}).Where("uid = ?", id).Update("posts_number", gorm.Expr("posts_number + 1"))
+
 	tx.Commit()
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
@@ -113,18 +115,45 @@ func CreatePost(c *gin.Context, id uint, urls []string, content string) response
 }
 
 func DeletePost(uid uint, pid uint) response.ResStruct {
+	tx := global.MysqlDB.Begin()
+
 	post := db.Post{
 		PID: pid,
 	}
 
-	err := global.MysqlDB.Where("uid = ?", uid).Delete(&post).Error
+	err := tx.Where("uid = ?", uid).First(&post).Error
 	if err != nil {
+		tx.Rollback()
 		return response.ResStruct{
 			HttpStatus: http.StatusBadRequest,
 			Code:       response.FailCode,
 			Message:    err.Error(),
 		}
 	}
+
+	err = tx.Where("uid = ?", uid).Delete(&post).Error
+	if err != nil {
+		tx.Rollback()
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+
+	err = tx.Where("p_id = ?", pid).Delete(&db.PostPhoto{}).Error
+	if err != nil {
+		tx.Rollback()
+		return response.ResStruct{
+			HttpStatus: http.StatusInternalServerError,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+
+	tx.Model(&db.UserData{}).Where("uid = ?", uid).Update("posts_number", gorm.Expr("posts_number - 1"))
+
+	tx.Commit()
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
@@ -176,6 +205,8 @@ func NewForward(uid uint, pid uint, content string) response.ResStruct {
 			Data:       nil,
 		}
 	}
+
+	global.MysqlDB.Model(&db.UserData{}).Where("uid = ?", uid).Update("forward_number", gorm.Expr("forward_number + 1"))
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
@@ -191,7 +222,7 @@ func DeleteForward(uid uint, fid uint) response.ResStruct {
 		FID: fid,
 	}
 
-	err := global.MysqlDB.Where("author_user_id = ?", uid).Delete(&forward).Error
+	err := global.MysqlDB.Where("author_user_id = ?", uid).First(&forward).Error
 	if err != nil {
 		return response.ResStruct{
 			HttpStatus: http.StatusBadRequest,
@@ -199,6 +230,18 @@ func DeleteForward(uid uint, fid uint) response.ResStruct {
 			Message:    err.Error(),
 		}
 	}
+
+	err = global.MysqlDB.Where("author_user_id = ?", uid).Delete(&forward).Error
+	if err != nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+
+	global.MysqlDB.Model(&db.UserData{}).Where("uid = ?", uid).Update("forward_number", gorm.Expr("forward_number - 1"))
+
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
