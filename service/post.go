@@ -16,17 +16,12 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	StorageLocation = "storage"
-	ServerName      = "121.5.1.73"
-)
-
 func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.ResStruct {
-	utils.PathExists(StorageLocation)
+	utils.PathExists(global.FileStorageLocation)
 
 	filesuffix := path.Ext(file.Filename)
 	file.Filename = strconv.FormatUint(uint64(id), 10) + strconv.FormatInt(time.Now().Unix(), 10) + utils.RandStr(20) + filesuffix
-	dst := path.Join(StorageLocation, file.Filename)
+	dst := path.Join(global.FileStorageLocation, file.Filename)
 	err := c.SaveUploadedFile(file, dst)
 	if err != nil {
 		return response.ResStruct{
@@ -36,7 +31,7 @@ func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.Re
 			Data:       nil,
 		}
 	}
-	dst = "http://" + ServerName + ":8080/upload/pictures/" + file.Filename
+	dst = "http://" + global.ServerName + ":8080/upload/pictures/" + file.Filename
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
