@@ -82,7 +82,7 @@ func SetRouter() {
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
-	r.StaticFS("/upload/pictures", http.Dir("./storage"))
+	r.StaticFS("/upload/pictures", http.Dir(global.FileStorageLocation))
 
 	r.GET("/token", controller.GetToken)
 
