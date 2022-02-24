@@ -8,9 +8,9 @@ import (
 	"picture_community/entity/_response"
 )
 
-func UserPost(u _request.UserHomeRequest) (int64, int, []_response.ResponsePost) {
+func UserPost(u _request.UserHomeRequest) (int64, int, []_response.ResponseHomePost) {
 
-	count, followList := post.QueryPostListByUID(u.Uid, u.Page, u.PageSize)
+	count, followList := post.QueryHomePostListByUID(u.Uid, u.Page, u.PageSize)
 
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
@@ -44,18 +44,18 @@ func UserPostLike(u _request.UserHomeRequest) (int64, int, []_response.ResponseS
 	return count, totalPage, likeList
 }
 
-func UserLikePost(u _request.UserHomeRequest) (int64, int, []_response.ResponsePost) {
+func UserLikePost(u _request.UserHomeRequest) (int64, int, []_response.ResponseHomePost) {
 
-	count, likePostList := post.QueryLikeList2ByUID(u.Uid, u.Page, u.PageSize)
+	count, likePostList := post.QueryLikePostByUID(u.Uid, u.Page, u.PageSize)
 
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 
 	return count, totalPage, likePostList
 }
 
-func UserCollection(u _request.UserHomeRequest) (int64, int, []_response.ResponsePost) {
+func UserCollection(u _request.UserHomeRequest) (int64, int, []_response.ResponseHomePost) {
 
-	count, collectionList := post.QueryCollectionListByUID(u.Uid, u.Page, u.PageSize)
+	count, collectionList := post.QueryHomeCollectionListByUID(u.Uid, u.Page, u.PageSize)
 
 	totalPage := int(math.Ceil(float64(count) / float64(u.PageSize)))
 

@@ -10,7 +10,7 @@ import (
 func QueryDetailById(pid uint) response.ResPost {
 	var res response.ResPost
 	global.MysqlDB.Table("user_detail a").Debug().
-		Select("a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.comment_number").
+		Select("a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.comment_number,b.create_time").
 		Joins("INNER JOIN `post` b ON b.p_id  = ?  and a.uid = b.uid", pid).
 		Scan(&res)
 	return res
@@ -32,4 +32,21 @@ func QueryCommentById(cid uint) response.ResComment {
 		Joins("INNER JOIN `comment` b ON b.c_id  = ? and b.parent_id = 0 and a.uid = b.user_id", cid).
 		Scan(&res)
 	return res
+}
+
+func QuerySingleDetailById(pid uint) response.ResSinglePost {
+	var res response.ResSinglePost
+	global.MysqlDB.Table("user_detail a").Debug().
+		Select("a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.create_time").
+		Joins("INNER JOIN `post` b ON b.p_id  = ?  and a.uid = b.uid", pid).
+		Scan(&res)
+	return res
+}
+
+func QueryIsLiked(pid uint, uid uint) bool {
+	result := global.MysqlDB.Debug().Where("from_user_id = ? AND to_like_post_id = ?", uid, pid).Find(&db.Liked{})
+	if result.RowsAffected > 0 {
+		return true
+	}
+	return false
 }
