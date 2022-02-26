@@ -33,9 +33,9 @@ func SetRouter() {
 		{
 			c.GET("/query", controller.QueryCommentController)
 			c.GET("/querySecond", controller.QueryCommentController2)
-			c.POST("/new", controller.AddFirstLevelCommentController)
+			c.POST("/new", middleware.AuthMiddleware, controller.AddFirstLevelCommentController)
 			c.DELETE("/delete", controller.DeleteCommentController)
-			c.POST("/secondNew", controller.AddSecondLevelCommentController)
+			c.POST("/secondNew", middleware.AuthMiddleware, controller.AddSecondLevelCommentController)
 		}
 
 	}
