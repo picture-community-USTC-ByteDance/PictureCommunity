@@ -1,9 +1,10 @@
 package global
 
 import (
+	"picture_community/utils"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"picture_community/utils"
 )
 
 var (
@@ -14,8 +15,12 @@ var (
 
 	GinEngine *gin.Engine
 
-	UserIDGenerator    *utils.IDGenerator
-	PostIDGenerator    *utils.IDGenerator
-	ForwardIDGenerator *utils.IDGenerator
-	CommentIDGenerator *utils.IDGenerator
+	UserIDGenerator      *utils.IDGenerator
+	PostIDGenerator      *utils.IDGenerator
+	ForwardIDGenerator   *utils.IDGenerator
+	CommentIDGenerator   *utils.IDGenerator
+	PostPhotoIDGenerator *utils.IDGenerator
+
+	FileStorageLocation = "../pic"
+	ServerName          = "121.5.1.73"
 )

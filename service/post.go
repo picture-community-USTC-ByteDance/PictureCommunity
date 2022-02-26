@@ -5,7 +5,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"path"
-	"picture_community/dao/post"
 	"picture_community/entity/db"
 	"picture_community/global"
 	"picture_community/response"
@@ -17,17 +16,12 @@ import (
 	"gorm.io/gorm"
 )
 
-const (
-	StorageLocation = "storage"
-	ServerName      = "121.5.1.73"
-)
-
 func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.ResStruct {
-	utils.PathExists(StorageLocation)
+	utils.PathExists(global.FileStorageLocation)
 
 	filesuffix := path.Ext(file.Filename)
 	file.Filename = strconv.FormatUint(uint64(id), 10) + strconv.FormatInt(time.Now().Unix(), 10) + utils.RandStr(20) + filesuffix
-	dst := path.Join(StorageLocation, file.Filename)
+	dst := path.Join(global.FileStorageLocation, file.Filename)
 	err := c.SaveUploadedFile(file, dst)
 	if err != nil {
 		return response.ResStruct{
@@ -37,7 +31,7 @@ func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.Re
 			Data:       nil,
 		}
 	}
-	dst = "http://" + ServerName + ":8080/upload/pictures/" + file.Filename
+	dst = "http://" + global.ServerName + ":8080/upload/pictures/" + file.Filename
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
@@ -46,19 +40,34 @@ func FileUpload(c *gin.Context, id uint, file *multipart.FileHeader) response.Re
 	}
 }
 
-func CreatePost(c *gin.Context, id uint, url string, content string) response.ResStruct {
+func CreatePost(c *gin.Context, id uint, urls []string, content string) response.ResStruct {
+	len := len(urls)
+	if len <= 0 || len > 10 {
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    "number of photos cannot exceed 10 per post",
+			Data:       nil,
+		}
+	}
+
+	tx := global.MysqlDB.Begin()
+
 	newPost := db.Post{
+		PID:              global.PostIDGenerator.NewID(),
 		UID:              id,
-		TitlePhotoUrl:    url,
+		TitlePhotoUrl:    urls[0],
 		Content:          content,
-		PhotoNumber:      1,
+		PhotoNumber:      len,
 		CommentNumber:    0,
 		LikeNumber:       0,
 		ForwardNumber:    0,
 		CollectionNumber: 0,
 	}
-	postID, err := post.InsertPostByUserID(newPost)
+	err := tx.Create(&newPost).Error
+	postID := newPost.PID
 	if err != nil {
+		tx.Rollback()
 		return response.ResStruct{
 			HttpStatus: http.StatusGatewayTimeout,
 			Code:       response.FailCode,
@@ -66,6 +75,32 @@ func CreatePost(c *gin.Context, id uint, url string, content string) response.Re
 			Data:       nil,
 		}
 	}
+
+	postPhoto := db.PostPhoto{
+		PID:          postID,
+		UID:          id,
+		Url:          urls[0],
+		SerialNumber: 0,
+	}
+	for i, url := range urls {
+		postPhoto.SerialNumber = uint(i)
+		postPhoto.Url = url
+		postPhoto.ID = global.PostIDGenerator.NewID()
+		err = tx.Create(&postPhoto).Error
+		if err != nil {
+			tx.Rollback()
+			return response.ResStruct{
+				HttpStatus: http.StatusGatewayTimeout,
+				Code:       response.FailCode,
+				Message:    err.Error(),
+				Data:       nil,
+			}
+		}
+	}
+
+	tx.Model(&db.UserData{}).Where("uid = ?", id).Update("posts_number", gorm.Expr("posts_number + 1"))
+
+	tx.Commit()
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
@@ -75,18 +110,45 @@ func CreatePost(c *gin.Context, id uint, url string, content string) response.Re
 }
 
 func DeletePost(uid uint, pid uint) response.ResStruct {
+	tx := global.MysqlDB.Begin()
+
 	post := db.Post{
 		PID: pid,
 	}
 
-	err := global.MysqlDB.Where("uid = ?", uid).Delete(&post).Error
+	err := tx.Where("uid = ?", uid).First(&post).Error
 	if err != nil {
+		tx.Rollback()
 		return response.ResStruct{
 			HttpStatus: http.StatusBadRequest,
 			Code:       response.FailCode,
 			Message:    err.Error(),
 		}
 	}
+
+	err = tx.Where("uid = ?", uid).Delete(&post).Error
+	if err != nil {
+		tx.Rollback()
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+
+	err = tx.Where("p_id = ?", pid).Delete(&db.PostPhoto{}).Error
+	if err != nil {
+		tx.Rollback()
+		return response.ResStruct{
+			HttpStatus: http.StatusInternalServerError,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+
+	tx.Model(&db.UserData{}).Where("uid = ?", uid).Update("posts_number", gorm.Expr("posts_number - 1"))
+
+	tx.Commit()
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
@@ -138,6 +200,8 @@ func NewForward(uid uint, pid uint, content string) response.ResStruct {
 			Data:       nil,
 		}
 	}
+
+	global.MysqlDB.Model(&db.UserData{}).Where("uid = ?", uid).Update("forward_number", gorm.Expr("forward_number + 1"))
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,
@@ -153,7 +217,7 @@ func DeleteForward(uid uint, fid uint) response.ResStruct {
 		FID: fid,
 	}
 
-	err := global.MysqlDB.Where("author_user_id = ?", uid).Delete(&forward).Error
+	err := global.MysqlDB.Where("author_user_id = ?", uid).First(&forward).Error
 	if err != nil {
 		return response.ResStruct{
 			HttpStatus: http.StatusBadRequest,
@@ -161,6 +225,18 @@ func DeleteForward(uid uint, fid uint) response.ResStruct {
 			Message:    err.Error(),
 		}
 	}
+
+	err = global.MysqlDB.Where("author_user_id = ?", uid).Delete(&forward).Error
+	if err != nil {
+		return response.ResStruct{
+			HttpStatus: http.StatusBadRequest,
+			Code:       response.FailCode,
+			Message:    err.Error(),
+		}
+	}
+
+	global.MysqlDB.Model(&db.UserData{}).Where("uid = ?", uid).Update("forward_number", gorm.Expr("forward_number - 1"))
+
 	return response.ResStruct{
 		HttpStatus: http.StatusOK,
 		Code:       response.SuccessCode,

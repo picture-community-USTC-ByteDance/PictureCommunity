@@ -8,6 +8,7 @@ import (
 	"picture_community/global"
 )
 
+
 //查询一级评论
 func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBackTemp, int64) {
 	var coms []_response.QueryCommentBackTemp
@@ -16,13 +17,14 @@ func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_respon
 		Model(&db.Comment{}).
 		Where("post_id = ? AND parent_id = 0", postid).Count(&count).
 		Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
-
 	fmt.Println(coms)
 	return err, coms, count
 }
 
+
 //查询二级评论
 func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2, int64) {
+
 	var coms []_response.QueryCommentBackTemp2
 	var count int64
 	err := global.MysqlDB.Debug().
@@ -32,6 +34,7 @@ func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) 
 	fmt.Println(coms)
 	return err, coms, count
 }
+
 func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
 	var tmp db.UserDetail
 	var com db.Comment
@@ -72,6 +75,7 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	global.MysqlDB.First(&re, com.CID)
 	return err, re
 }
+
 func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, _response.CreateSecondLevelCommentBack) {
 	var tmp db.UserDetail
 	var com db.Comment
