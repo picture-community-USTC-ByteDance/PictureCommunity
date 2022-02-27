@@ -10,7 +10,7 @@ type ResponseChatUsers struct {
 }
 
 type ResponseHistoryMsg struct {
-	FromID    uint
-	Content   string
-	CreatedAt time.Time
+	FromID    uint      `json:"from_id"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
 }

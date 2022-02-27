@@ -50,7 +50,7 @@ func GetHistoryMsg(c *gin.Context) {
 	count, userInfo, HistoryMsgList := service.GetHistoryMsg(uid.(uint), uint(ToId))
 
 	if count == 0 {
-		response.Success(c, nil, "没有与其他用户聊天")
+		response.Success(c, nil, "没有与该用户聊天")
 	} else {
 		response.Success(c, gin.H{"nickname": userInfo.Nickname, "profile": userInfo.Profile, "HistoryMsgList": HistoryMsgList}, "ok")
 	}

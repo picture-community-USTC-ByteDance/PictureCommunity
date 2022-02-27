@@ -74,8 +74,8 @@ func WsHandler(c *gin.Context) {
 	}
 	// 用户注册到用户管理上
 	Manager.Register <- client
-	go client.Read()
-	go client.Write()
+	go client.Read()  //服务端接受用户发来的消息
+	go client.Write() //服务端给用户发送消息
 
 }
 
@@ -122,7 +122,9 @@ func (c *Client) Read() {
 			//log.Println("数据格式不正确",err)
 			return
 		}
-
+		if c.ToId == 0 {
+			continue
+		}
 		chatMessage := db.ChatMessage{
 			FromId:    c.FromId,
 			ToId:      c.ToId,
