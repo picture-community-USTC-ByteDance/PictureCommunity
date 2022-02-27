@@ -20,4 +20,7 @@ var (
 	ForwardIDGenerator   *utils.IDGenerator
 	CommentIDGenerator   *utils.IDGenerator
 	PostPhotoIDGenerator *utils.IDGenerator
+
+	FileStorageLocation = "../pic"
+	ServerName          = "121.5.1.73"
 )

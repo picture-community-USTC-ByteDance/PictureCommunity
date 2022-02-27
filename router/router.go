@@ -33,9 +33,9 @@ func SetRouter() {
 		{
 			c.GET("/query", controller.QueryCommentController)
 			c.GET("/querySecond", controller.QueryCommentController2)
-			c.POST("/new", controller.AddFirstLevelCommentController)
+			c.POST("/new", middleware.AuthMiddleware, controller.AddFirstLevelCommentController)
 			c.DELETE("/delete", controller.DeleteCommentController)
-			c.POST("/secondNew", controller.AddSecondLevelCommentController)
+			c.POST("/secondNew", middleware.AuthMiddleware, controller.AddSecondLevelCommentController)
 		}
 
 	}
@@ -65,13 +65,14 @@ func SetRouter() {
 	r.GET("/list/post", controller.UserPost)
 	r.GET("/list/collection", controller.UserCollection)
 	r.GET("/list/likepost", controller.UserLikePost) //本用户点赞过的帖子
+	r.GET("/list/follow", controller.UserFollow)
+	r.GET("/list/fans", controller.UserFans)
+	r.GET("/list/like", controller.UserPostLike) //给本用户的帖子点赞过的用户列表
 	u := r.Group("/list")
 	{
 		u.Use(middleware.AuthMiddleware)
 		//u.GET("/:id", controller.UserHome)
-		u.GET("/follow", controller.UserFollow)
-		u.GET("/fans", controller.UserFans)
-		u.GET("/like", controller.UserPostLike) //给本用户的帖子点赞过的用户列表
+
 	}
 	m := r.Group("/firstpage")
 	{
@@ -82,7 +83,7 @@ func SetRouter() {
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
-	r.StaticFS("/upload/pictures", http.Dir("./storage"))
+	r.StaticFS("/upload/pictures", http.Dir(global.FileStorageLocation))
 
 	r.GET("/token", controller.GetToken)
 
