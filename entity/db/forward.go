@@ -2,6 +2,8 @@ package db
 
 import "time"
 
+/*ToForwardPostID表示帖子id
+AuthorUserID表示转发了这个帖子的用户id*/
 type Forward struct {
 	FID             uint `gorm:"primaryKey"`
 	ToForwardPostID uint

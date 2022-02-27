@@ -49,8 +49,11 @@ func QuerySingleDetailById(pid uint) response.ResSinglePost {
 }
 
 func QueryIsLiked(pid uint, uid uint) bool {
-	result := global.MysqlDB.Debug().Where("from_user_id = ? AND to_like_post_id = ?", uid, pid).Find(&db.Liked{})
-	if result.RowsAffected > 0 {
+	var res db.Liked
+	result := global.MysqlDB.Debug().Select("state").
+		Where("from_user_id = ? AND to_like_post_id = ?", uid, pid).
+		Find(&db.Liked{}).Scan(&res)
+	if result.RowsAffected > 0 && res.State == true {
 		return true
 	}
 	return false
