@@ -50,6 +50,7 @@ func GetDetailController(c *gin.Context) {
 	}
 }
 
+/*得到单个帖子*/
 func GetSinglePost(c *gin.Context) {
 	var u _request.SinglePost
 	if err := c.ShouldBind(&u); err != nil {

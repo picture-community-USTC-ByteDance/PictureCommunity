@@ -33,16 +33,17 @@ func SetRouter() {
 		{
 			c.GET("/query", controller.QueryCommentController)
 			c.GET("/querySecond", controller.QueryCommentController2)
-			c.POST("/new", controller.AddFirstLevelCommentController)
+			c.POST("/new", middleware.AuthMiddleware, controller.AddFirstLevelCommentController)
 			c.DELETE("/delete", controller.DeleteCommentController)
-			c.POST("/secondNew", controller.AddSecondLevelCommentController)
+			c.POST("/secondNew", middleware.AuthMiddleware, controller.AddSecondLevelCommentController)
 		}
 
 	}
 	q := r.Group("/query")
 	{
 		q.GET("/userData", middleware.AuthMiddleware, controller.QueryUserData)
-		q.GET("/userDetail", middleware.AuthMiddleware, controller.QueryUserPosts)
+		q.GET("/userDataByUsername", middleware.AuthMiddleware, controller.QueryUserDataByUsername)
+		q.GET("/userPosts", middleware.AuthMiddleware, controller.QueryUserPosts)
 	}
 	f := r.Group("/forward")
 	{
@@ -82,7 +83,7 @@ func SetRouter() {
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
-	r.StaticFS("/upload/pictures", http.Dir("./storage"))
+	r.StaticFS("/upload/pictures", http.Dir(global.FileStorageLocation))
 
 	r.GET("/token", controller.GetToken)
 

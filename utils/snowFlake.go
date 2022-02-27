@@ -6,13 +6,10 @@ import (
 )
 
 const (
-	workerBits  uint  = 6
-	numberBits  uint  = 12
+	numberBits  uint  = 6
 	flgBits     uint  = 4
-	workerMax   uint  = -1 ^ (-1 << workerBits)
 	numberMax   int64 = -1 ^ (-1 << numberBits)
-	timeShift   uint  = workerBits + numberBits + flgBits
-	workerShift uint  = numberBits
+	timeShift   uint  = numberBits + flgBits
 	numberShift uint  = flgBits
 	startTime   int64 = 1640966400000 // 如果在程序跑了一段时间修改了epoch这个值 可能会导致生成相同的ID  //2022年1月1日00:00:00
 )
@@ -22,15 +19,13 @@ const (
 type IDGenerator struct {
 	mu        sync.Mutex
 	timestamp int64
-	workerId  int64
 	flag      int64
 	number    int64
 }
 
-func NewIDGenerator(workerId int64, flag int64) *IDGenerator {
+func NewIDGenerator(flag int64) *IDGenerator {
 	return &IDGenerator{
 		timestamp: 0,
-		workerId:  workerId,
 		flag:      flag,
 		number:    0,
 	}
@@ -51,6 +46,6 @@ func (w *IDGenerator) NewID() uint {
 		w.number = 0
 		w.timestamp = now
 	}
-	ID := (now-startTime)<<timeShift | (w.workerId << workerShift) | (w.number << numberShift) | w.flag
+	ID := (now-startTime)<<timeShift | (w.number << numberShift) | w.flag
 	return uint(ID)
 }
