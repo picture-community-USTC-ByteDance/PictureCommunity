@@ -6,6 +6,5 @@ type Firstpage struct {
 }
 
 type SinglePost struct {
-	Uid uint `form:"uid"      json:"uid"       binding:"required"`
 	Pid uint `form:"pid"      json:"pid"       binding:"required"`
 }
