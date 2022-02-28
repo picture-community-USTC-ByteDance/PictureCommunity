@@ -35,7 +35,7 @@ func QueryUserListByNickname(keywords string, page int, pageSize int) (int64, []
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
 	global.MysqlDB.Model(db.UserDetail{}).
-		Select("profile,uid,nickname,motto").
+		Select("user.uid,user.username,user_detail.profile,user_detail.nickname,user_detail.motto").Joins("inner join user on user.uid= user_detail.uid").
 		Where("nickname like ?", keywords).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
