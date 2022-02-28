@@ -2,7 +2,9 @@ package _response
 
 // 个人主页展示的的用户基本信息
 type UserData struct {
+	Uid              uint   `json:"uid"`
 	Nickname         string `json:"nickname"`
+	Username         string `json:"username"`
 	Sex              bool   `json:"sex"`
 	Profile          string `json:"profile"`
 	Motto            string `json:"motto"`
