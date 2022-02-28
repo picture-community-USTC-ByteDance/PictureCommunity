@@ -8,7 +8,6 @@ import (
 	"picture_community/global"
 )
 
-
 //查询一级评论
 func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBackTemp, int64) {
 	var coms []_response.QueryCommentBackTemp
@@ -20,7 +19,6 @@ func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_respon
 	fmt.Println(coms)
 	return err, coms, count
 }
-
 
 //查询二级评论
 func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2, int64) {
