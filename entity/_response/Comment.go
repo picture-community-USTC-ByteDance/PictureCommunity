@@ -1,35 +1,37 @@
 package _response
 
-type QueryCommentBack struct {
+import (
+	"picture_community/entity/db"
+	"time"
+)
 
-	UID      int    `json:"userId"`
-	NickName string `json:"nickName"`
-	//	Profile     string //头像略缩图
-	ChildNumber int    //子评论个数
-	Content     string //内容
-}
 type QueryCommentBackTemp struct {
-
-	ChildNumber int //子评论个数
-	LikeNumber  int
-	Content     string //内容
-	UserID      uint   //评论作者id
+	CID         uint //评论id
+	UserID      uint //(评论)用户id
+	NickName    string
+	Profile     string    //略缩图
+	Content     string    //内容
+	UpdateTime  time.Time //评论时间
+	LikeNumber  uint      //评论的点赞数
+	ChildNumber int       //子评论个数
+	LikeStatus  bool      //true表示已点赞
 }
 type QueryCommentBackTemp2 struct {
-	//	ChildNumber int    //子评论个数
-	LikeNumber int
-	Content    string //内容
-	UserID     uint   //评论作者id
+	CID uint //评论id
+
+	UserID   uint //(评论)用户id
+	NickName string
+	Profile  string //略缩图
+
+	Content    string    //内容
+	UpdateTime time.Time //评论时间
+	LikeNumber uint      //评论的点赞数
+	LikeStatus bool      //true表示已点赞
+	ParentId   uint
 }
-type CreateFirstLevelCommentBack struct {
-	PID     uint   `json:"post_id"`
-	Content string //评论内容
-}
-type CreateSecondLevelCommentBack struct {
-	PID      uint   `json:"post_id"`
-	ParentID uint   `json:"parent_id"`
-	Content  string //评论内容
-}
+
+type CreateFirstLevelCommentBack = db.Comment
+type CreateSecondLevelCommentBack = db.Comment
 
 //type DeleteCommentBack struct {
 //	PID 		uint	`json:"post_id"`
