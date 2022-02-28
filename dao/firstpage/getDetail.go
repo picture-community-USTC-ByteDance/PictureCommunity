@@ -64,3 +64,11 @@ func QueryAllPhotos(pid uint) []string {
 		Select("url").Where("p_id = ?", pid).Scan(&res)
 	return res
 }
+
+func QueryUidByPid(pid uint) uint {
+	var res db.Post
+	global.MysqlDB.Debug().Select("uid").
+		Where("p_id = ?", pid).
+		Find(&db.Post{}).Scan(&res)
+	return res.UID
+}

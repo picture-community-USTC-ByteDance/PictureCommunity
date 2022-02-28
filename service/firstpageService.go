@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
 	"picture_community/dao/firstpage"
 	"picture_community/response"
 )
@@ -55,10 +56,11 @@ func GetPostDetail(uid uint, page int, pageSize int) (bool, []response.ResPost) 
 	return true, res
 }
 
-func GetSingleDetail(uid uint, pid uint) response.ResSinglePost {
+func GetSingleDetail(pid uint, c *gin.Context) response.ResSinglePost {
 	post := firstpage.QuerySingleDetailById(pid)
 	post.PID = pid
+	myUid, _ := c.Get("uid")
 	post.Photos = firstpage.QueryAllPhotos(pid)
-	post.Is_like = firstpage.QueryIsLiked(pid, uid)
+	post.Is_like = firstpage.QueryIsLiked(pid, myUid.(uint))
 	return post
 }
