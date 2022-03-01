@@ -74,6 +74,15 @@ func SetRouter() {
 		//u.GET("/:id", controller.UserHome)
 
 	}
+	r.GET("/websocket", controller.WsHandler)
+	chat := r.Group("/message")
+	{
+		chat.Use(middleware.AuthMiddleware)
+
+		chat.GET("/historyMsg", controller.GetHistoryMsg)
+		chat.GET("/chatUserList", controller.GetUserChatList)
+		chat.GET("/unreadMsg", controller.GetUnreadMsg)
+	}
 	m := r.Group("/firstpage")
 	{
 

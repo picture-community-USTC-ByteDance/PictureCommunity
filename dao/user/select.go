@@ -35,7 +35,7 @@ func QueryUserListByNickname(keywords string, page int, pageSize int) (int64, []
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
 	global.MysqlDB.Model(db.UserDetail{}).
-		Select("profile,uid,nickname,motto").
+		Select("user.uid,user.username,user_detail.profile,user_detail.nickname,user_detail.motto").Joins("inner join user on user.uid= user_detail.uid").
 		Where("nickname like ?", keywords).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
@@ -85,4 +85,44 @@ func QueryUserDetailByUID(uid uint) (_response.UserDetail, error) {
 		Joins("inner join user on user_detail.uid = user.uid").
 		Where("user_detail.uid=?", uid).First(&userDetail).Error
 	return userDetail, err
+}
+
+func QueryChatListByUID(uid uint, page int, pageSize int) (int64, []_response.ResponseChatUsers) {
+	var searchUsers []_response.ResponseChatUsers
+	var count int64
+
+	sql := "select uid,profile,nickname,unread from user_detail a join " +
+		"(select from_id,count((is_read=0) OR null) as unread from chat_message where to_id=?  group by from_id union " +
+		"select to_id,count(null) as unread from chat_message where  from_id=?  AND to_id not in (select from_id from chat_message where to_id=? group by from_id)  group by to_id) " +
+		"as b on a.uid=b.from_id  order by unread desc  limit ? offset ?"
+	sql2 := "select count(*) from " + "(" + "select uid,profile,nickname from user_detail where  uid in " +
+		"(select distinct to_id from chat_message where from_id=? union  select distinct from_id from chat_message where to_id=?)" + ") as t"
+
+	global.MysqlDB.Raw(sql2, uid, uid).Scan(&count).Raw(sql, uid, uid, uid, pageSize, (page-1)*pageSize).Scan(&searchUsers)
+	return count, searchUsers
+}
+
+func QueryHistoryMsg(uid uint, toId uint) (int64, db.UserDetail, []_response.ResponseHistoryMsg) {
+	var HistoryMsgList []_response.ResponseHistoryMsg
+	var count int64
+	global.MysqlDB.Model(db.ChatMessage{}).
+		Select("from_id,content,created_at").
+		Where("(from_id= ? AND to_id=?) OR (from_id=? AND to_id= ?)", uid, toId, toId, uid).
+		Count(&count).Order("created_at").Scan(&HistoryMsgList)
+	var userInfo db.UserDetail
+	global.MysqlDB.First(&userInfo, toId)
+
+	global.MysqlDB.Model(&db.ChatMessage{}).
+		Where("to_id= ? AND from_id= ?", uid, toId).
+		Update("is_read", 1)
+	return count, userInfo, HistoryMsgList
+}
+
+func QueryUnreadMsg(uid uint) int64 {
+	var count int64
+	global.MysqlDB.Model(db.ChatMessage{}).
+		Where(" to_id= ? AND is_read=?", uid, 0).
+		Count(&count)
+
+	return count
 }
