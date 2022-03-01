@@ -1,4 +1,4 @@
-package response
+package _response
 
 import "time"
 
@@ -16,7 +16,10 @@ type ResPost struct {
 	Create_time     time.Time
 	//Comment         []ResComment
 }
-
+type TotalRes struct {
+	Page      int
+	TotalPost []ResPost
+}
 type ResSinglePost struct {
 	PID         uint
 	Nickname    string

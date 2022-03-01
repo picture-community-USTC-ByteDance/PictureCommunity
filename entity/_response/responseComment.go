@@ -1,4 +1,4 @@
-package response
+package _response
 
 /*评论*/
 type ResComment struct {
