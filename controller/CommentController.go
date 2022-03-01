@@ -79,7 +79,6 @@ func QueryCommentController2(c *gin.Context) {
 			"comments":  res,
 			"totalpage": totalpage,
 		}, "返回二级评论成功")
-
 	}
 }
 

@@ -30,6 +30,7 @@ type QueryCommentBackTemp2 struct {
 	LikeStatus bool      //true表示已点赞
 	ParentId   uint
 	Username   string
+
 }
 
 type CreateFirstLevelCommentBack = db.Comment

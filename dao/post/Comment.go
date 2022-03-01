@@ -28,6 +28,7 @@ func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_respon
 
 //查询二级评论
 func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2, int64) {
+
 	var coms []_response.QueryCommentBackTemp2
 	var count int64
 	err := global.MysqlDB.Table("comment").
@@ -39,6 +40,7 @@ func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) 
 	fmt.Println(err)
 	return err, coms, count
 }
+
 func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
 	var tmp db.UserDetail
 	var com db.Comment
@@ -79,6 +81,7 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	global.MysqlDB.First(&re, com.CID)
 	return err, re
 }
+
 func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, _response.CreateSecondLevelCommentBack) {
 	var tmp db.UserDetail
 	var com db.Comment

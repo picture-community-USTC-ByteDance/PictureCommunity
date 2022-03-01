@@ -39,7 +39,7 @@ func GetDetailController(c *gin.Context) {
 		return
 	}
 	if u.Page <= 0 || u.PageSize <= 0 {
-		response.CheckFail(c, nil, "页码或数量有误")
+		response.Fail(c, nil, "页码或数量有误")
 		return
 	}
 	isOk, postList := service.GetPostDetail(uid.(uint), u.Page, u.PageSize)
@@ -61,10 +61,6 @@ func GetSinglePost(c *gin.Context) {
 		response.CheckFail(c, nil, "帖子id出错")
 		return
 	}
-	if u.Uid <= 0 {
-		response.CheckFail(c, nil, "用户id出错")
-		return
-	}
-	post := service.GetSingleDetail(u.Uid, u.Pid)
+	post := service.GetSingleDetail(u.Pid, c)
 	response.Success(c, post, "获取成功")
 }

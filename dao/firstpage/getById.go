@@ -15,6 +15,15 @@ func QueryFollowListByUID(uid uint, page int, pageSize int) (int64, []uint) {
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
 }
+func QueryAllFollowByUID(uid uint) (int64, []uint) {
+	var searchUsers []uint
+	var count int64 //FollowedID
+	global.MysqlDB.Model(db.Follow{}).
+		Select("followed_id").
+		Where("follow.uid = ?", uid).Count(&count).
+		Scan(&searchUsers)
+	return count, searchUsers
+}
 
 /*通过关注的人的id获取他们的最新帖子id*/
 func QueryNewPostId(uid uint) (row int, pid uint) {

@@ -7,6 +7,12 @@ const (
 	ServerErrorCode = 500
 	UnAuthorized    = 600
 )
+const (
+	//websocket信号
+	WebsocketSuccess     = 1001
+	WebsocketOnlineReply = 1002
+	WebsocketEnd         = 1003
+)
 
 type ResStruct struct {
 	HttpStatus int         //http状态
