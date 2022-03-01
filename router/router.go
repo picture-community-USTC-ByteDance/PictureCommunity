@@ -21,6 +21,9 @@ func SetRouter() {
 		g.POST("/updateUserEmail", middleware.AuthMiddleware, controller.UpdateUserEmailController)
 		g.POST("/updateUserTelephone", middleware.AuthMiddleware, controller.UpdateUserTelephoneController)
 		g.GET("/queryMyDetail", middleware.AuthMiddleware, controller.QueryMyDetailController)
+		g.POST("/followUser", middleware.AuthMiddleware, controller.UserFollowController)
+		g.POST("/unfollowUser", middleware.AuthMiddleware, controller.UserUnfollowController)
+		g.POST("/updatePassword", middleware.AuthMiddleware, controller.UpdatePassword)
 	}
 	p := r.Group("/post")
 	{ //p.Use(middleware.AuthMiddleware())
@@ -62,23 +65,25 @@ func SetRouter() {
 	r.GET("/list/post", controller.UserPost)
 	r.GET("/list/collection", controller.UserCollection)
 	r.GET("/list/likepost", controller.UserLikePost) //本用户点赞过的帖子
+	r.GET("/list/follow", controller.UserFollow)
+	r.GET("/list/fans", controller.UserFans)
+	r.GET("/list/like", controller.UserPostLike) //给本用户的帖子点赞过的用户列表
 	u := r.Group("/list")
 	{
 		u.Use(middleware.AuthMiddleware)
 		//u.GET("/:id", controller.UserHome)
-		u.GET("/follow", controller.UserFollow)
-		u.GET("/fans", controller.UserFans)
-		u.GET("/like", controller.UserPostLike) //给本用户的帖子点赞过的用户列表
+
 	}
 	m := r.Group("/firstpage")
 	{
 
-		m.GET("/getIdList", controller.GetIdListController)     //获取关注的人的帖子和转发ID
-		m.GET("/getDetailList", controller.GetDetailController) //根据ID获取关注的人的帖子信息
+		m.GET("/getIdList", middleware.AuthMiddleware, controller.GetIdListController)     //获取关注的人的帖子和转发ID
+		m.GET("/getDetailList", middleware.AuthMiddleware, controller.GetDetailController) //根据ID获取关注的人的帖子信息
+		m.GET("/getDetail", middleware.AuthMiddleware, controller.GetSinglePost)           //根据帖子ID获取对应帖子详情
 	}
 
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
-	r.StaticFS("/upload/pictures", http.Dir("./storage"))
+	r.StaticFS("/upload/pictures", http.Dir(global.FileStorageLocation))
 
 	r.GET("/token", controller.GetToken)
 
