@@ -22,6 +22,7 @@ type TotalRes struct {
 }
 type ResSinglePost struct {
 	PID         uint
+	Username    string
 	Nickname    string
 	Profile     string
 	Photos      []string
@@ -29,4 +30,5 @@ type ResSinglePost struct {
 	Like_number int
 	Create_time time.Time
 	Is_like     bool
+	Is_follow   bool
 }

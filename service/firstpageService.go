@@ -78,9 +78,12 @@ func GetPostDetail(uid uint, page int, pageSize int) (bool, _response.TotalRes) 
 
 func GetSingleDetail(pid uint, c *gin.Context) _response.ResSinglePost {
 	post := firstpage.QuerySingleDetailById(pid)
+	UidOfPost := firstpage.QueryUidByPid(pid)
+	post.Username = firstpage.QueryUsernameById(UidOfPost)
 	post.PID = pid
 	myUid, _ := c.Get("uid")
 	post.Photos = firstpage.QueryAllPhotos(pid)
+	post.Is_follow = firstpage.QueryIsFollowed(myUid.(uint), UidOfPost)
 	post.Is_like = firstpage.QueryIsLiked(pid, myUid.(uint))
 	return post
 }

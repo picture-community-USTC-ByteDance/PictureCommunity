@@ -58,6 +58,16 @@ func QueryIsLiked(pid uint, uid uint) bool {
 	}
 	return false
 }
+func QueryIsFollowed(myUid uint, uid uint) bool {
+	var res db.Follow
+	result := global.MysqlDB.Debug().Select("state").
+		Where("uid = ? AND followed_id = ?", myUid, uid).
+		Find(&db.Follow{}).Scan(&res)
+	if result.RowsAffected > 0 && res.State == true {
+		return true
+	}
+	return false
+}
 func QueryAllPhotos(pid uint) []string {
 	var res []string
 	global.MysqlDB.Model(db.PostPhoto{}).Debug().
