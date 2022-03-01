@@ -12,12 +12,17 @@ import (
 func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBackTemp, int64) {
 	var coms []_response.QueryCommentBackTemp
 	var count int64
-	err := global.MysqlDB.Debug().
-		Model(&db.Comment{}).
+	//err := global.MysqlDB.Debug().
+	//	Model(&db.Comment{}).
+	//	Where("post_id = ? AND parent_id = 0", postid).Count(&count).
+	//	Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
+	err := global.MysqlDB.Table("comment").
+		Select("comment.c_id,comment.user_id,comment.nick_name,comment.profile,comment.content,comment.update_time,comment.like_number,comment.child_number,comment.like_status,user.username").
+		Joins("inner join user on user.uid = comment.user_id").Debug().
 		Where("post_id = ? AND parent_id = 0", postid).Count(&count).
 		Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
-
 	fmt.Println(coms)
+	fmt.Println(err)
 	return err, coms, count
 }
 
@@ -25,11 +30,13 @@ func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_respon
 func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2, int64) {
 	var coms []_response.QueryCommentBackTemp2
 	var count int64
-	err := global.MysqlDB.Debug().
-		Model(&db.Comment{}).
+	err := global.MysqlDB.Table("comment").
+		Select("comment.c_id,comment.user_id,comment.nick_name,comment.profile,comment.content,comment.update_time,comment.like_number,comment.child_number,comment.like_status,comment.parent_id,user.username").
+		Joins("inner join user on user.uid = comment.user_id").Debug().
 		Where("post_id = ? AND parent_id = ?", postid, parent_id).Count(&count).
 		Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
 	fmt.Println(coms)
+	fmt.Println(err)
 	return err, coms, count
 }
 func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {

@@ -15,6 +15,7 @@ type QueryCommentBackTemp struct {
 	LikeNumber  uint      //评论的点赞数
 	ChildNumber int       //子评论个数
 	LikeStatus  bool      //true表示已点赞
+	Username    string
 }
 type QueryCommentBackTemp2 struct {
 	CID uint //评论id
@@ -28,6 +29,7 @@ type QueryCommentBackTemp2 struct {
 	LikeNumber uint      //评论的点赞数
 	LikeStatus bool      //true表示已点赞
 	ParentId   uint
+	Username   string
 }
 
 type CreateFirstLevelCommentBack = db.Comment
