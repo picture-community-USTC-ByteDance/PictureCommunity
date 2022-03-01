@@ -14,7 +14,8 @@ func InsertUser(newUser db.User) error {
 			return err
 		}
 
-		if err := tx.Create(&db.UserDetail{UID: newUser.UID}).Error; err != nil {
+		defaultProfile := "http://" + global.ServerName + ":8080/upload/pictures/default.jpg"
+		if err := tx.Create(&db.UserDetail{UID: newUser.UID, Nickname: newUser.Username, Profile: defaultProfile}).Error; err != nil {
 			return err
 		}
 
