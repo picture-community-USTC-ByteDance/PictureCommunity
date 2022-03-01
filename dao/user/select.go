@@ -35,7 +35,8 @@ func QueryUserListByNickname(keywords string, page int, pageSize int) (int64, []
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
 	global.MysqlDB.Model(db.UserDetail{}).
-		Select("user.uid,user.username,user_detail.profile,user_detail.nickname,user_detail.motto").Joins("inner join user on user.uid= user_detail.uid").
+		Select("user.uid,user.username,user_detail.profile,user_detail.nickname,user_detail.motto").
+		Joins("inner join user on user.uid= user_detail.uid").
 		Where("nickname like ?", keywords).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
@@ -46,8 +47,9 @@ func QueryFollowListByUID(uid uint, page int, pageSize int) (int64, []_response.
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
 	global.MysqlDB.Model(db.Follow{}).
-		Select("profile,user_detail.uid,nickname,motto").
+		Select("user_detail.uid,username,profile,nickname,motto").
 		Joins("inner join user_detail on follow.followed_id = user_detail.uid").
+		Joins("inner join user on user.uid= user_detail.uid").
 		Where("follow.uid = ? AND follow.state= ?", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
@@ -58,8 +60,9 @@ func QueryFansListByUID(uid uint, page int, pageSize int) (int64, []_response.Re
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
 	global.MysqlDB.Model(db.Fans{}).
-		Select("profile,user_detail.uid,nickname,motto").
+		Select("user_detail.uid,username,profile,nickname,motto").
 		Joins("inner join user_detail on fans.fans_id = user_detail.uid").
+		Joins("inner join user on user.uid= user_detail.uid").
 		Where("fans.uid = ? AND fans.state= ?", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
@@ -70,9 +73,10 @@ func QueryLikeList1ByUID(uid uint, page int, pageSize int) (int64, []_response.R
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
 	global.MysqlDB.Model(db.Post{}).
-		Select("profile,user_detail.uid,nickname,motto").
+		Select("user_detail.uid,username,profile,nickname,motto").
 		Joins("inner join liked on post.p_id = liked.to_like_post_id").
 		Joins("inner join user_detail on liked.from_user_id = user_detail.uid").
+		Joins("inner join user on user.uid= user_detail.uid").
 		Where("post.uid= ? AND liked.state=? ", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
