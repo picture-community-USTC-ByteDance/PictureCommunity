@@ -21,6 +21,7 @@ type TotalRes struct {
 	TotalPost []ResPost
 }
 type ResSinglePost struct {
+	UID         uint
 	PID         uint
 	Username    string
 	Nickname    string

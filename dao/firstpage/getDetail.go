@@ -42,7 +42,7 @@ func QueryCommentById(cid uint) _response.ResComment {
 func QuerySingleDetailById(pid uint) _response.ResSinglePost {
 	var res _response.ResSinglePost
 	global.MysqlDB.Table("user_detail a").Debug().
-		Select("a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.create_time").
+		Select("a.uid,a.nickname,a.`profile`,b.title_photo_url,b.content,b.like_number,b.create_time").
 		Joins("INNER JOIN `post` b ON b.p_id  = ?  and a.uid = b.uid", pid).
 		Scan(&res)
 	return res
