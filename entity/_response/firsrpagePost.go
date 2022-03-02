@@ -1,4 +1,4 @@
-package response
+package _response
 
 import "time"
 
@@ -16,9 +16,14 @@ type ResPost struct {
 	Create_time     time.Time
 	//Comment         []ResComment
 }
-
+type TotalRes struct {
+	Page      int
+	TotalPost []ResPost
+}
 type ResSinglePost struct {
+	UID         uint
 	PID         uint
+	Username    string
 	Nickname    string
 	Profile     string
 	Photos      []string
@@ -26,4 +31,5 @@ type ResSinglePost struct {
 	Like_number int
 	Create_time time.Time
 	Is_like     bool
+	Is_follow   bool
 }

@@ -8,7 +8,6 @@ type CreateSecondLevelComment struct {
 	PID      uint   `form:"p_id" json:"p_id" binding:"required"`
 	ParentId uint   `form:"parent_id" json:"parent_id" binding:"required"`
 	Content  string `form:"content" json:"content" binding:"required"`
-
 }
 type DeleteComment struct {
 	CID uint `form:"c_id" json:"c_id" binding:"required"`
