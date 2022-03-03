@@ -46,7 +46,7 @@ func GetDetailController(c *gin.Context) {
 	if isOk {
 		response.Success(c, postList, "获取成功")
 	} else {
-		response.Success(c, nil, "该用户没有关注任何人")
+		response.Success(c, nil, "该用户没有关注任何人!")
 	}
 }
 
