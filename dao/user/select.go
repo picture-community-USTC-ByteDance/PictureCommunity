@@ -59,11 +59,12 @@ func QueryFollowListByUID(uid uint, page int, pageSize int) (int64, []_response.
 func QueryFansListByUID(uid uint, page int, pageSize int) (int64, []_response.ResponseSearchUsers) {
 	var searchUsers []_response.ResponseSearchUsers
 	var count int64
-	global.MysqlDB.Model(db.Fans{}).
+  
+	global.MysqlDB.Model(db.Follow{}).
 		Select("user_detail.uid,username,profile,nickname,motto").
-		Joins("inner join user_detail on fans.fans_id = user_detail.uid").
+		Joins("inner join user_detail on follow.uid = user_detail.uid").
 		Joins("inner join user on user.uid= user_detail.uid").
-		Where("fans.uid = ? AND fans.state= ?", uid, true).Count(&count).
+		Where("follow.followed_id = ? AND follow.state= ?", uid, true).Count(&count).
 		Offset((page - 1) * pageSize).Limit(pageSize).Scan(&searchUsers)
 	return count, searchUsers
 }
