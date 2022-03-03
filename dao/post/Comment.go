@@ -47,10 +47,12 @@ func QueryNicknameAndProfile(userid uint) (nickname string, profile string) {
 	global.MysqlDB.Model(db.UserDetail{}).First(&t, userid)
 	return t.Nickname, t.Profile
 }
-func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
+
+//新添加一个评论，返回添加的这项数据
+func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, db.Comment) {
 
 	var com db.Comment
-	var re _response.CreateFirstLevelCommentBack
+	var re db.Comment
 	//先根据帖子id获取帖子，检查帖子是否存在
 	var posttemp db.Post
 	err := global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error
@@ -80,11 +82,12 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	return err, re
 }
 
-func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, _response.CreateSecondLevelCommentBack) {
+//新添加一个二级评论，返回添加的这项数据
+func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, db.Comment) {
 	var com db.Comment
 
 	//获取帖子
-	var re _response.CreateSecondLevelCommentBack
+	var re db.Comment
 	var posttemp db.Post
 	err := global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error
 	if err != nil {
