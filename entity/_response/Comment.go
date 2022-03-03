@@ -26,9 +26,9 @@ type QueryCommentBack2 struct {
 	Content    string    //内容
 	UpdateTime time.Time //评论时间
 	LikeNumber uint      //评论的点赞数
-	LikeStatus bool      //true表示已点赞
 	ParentId   uint
 	Username   string
+
 }
 
 type CreateFirstLevelCommentBack = db.Comment

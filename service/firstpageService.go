@@ -29,48 +29,19 @@ func GetPostIdList(uid uint, page int, pageSize int) (bool, []uint) {
 	return true, postIdList[0:index]
 }
 
-/*得到返回帖子的页数*/
-func Getpage(uid uint, pagesize int) int {
-	_, followUserList := firstpage.QueryAllFollowByUID(uid)
-	var res int
-	for i := 0; i < len(followUserList); i++ {
-		prow, _ := firstpage.QueryNewPostId(followUserList[i])
-		frow, _ := firstpage.QueryNewForwardId(followUserList[i])
-		res += prow
-		res += frow
-	}
-	if res%pagesize == 0 {
-		return res / pagesize
-	} else {
-		return res/pagesize + 1
-	}
-}
-
-/*根据上面获得的id取得对应的帖子详细信息*/
+/*根据自己的uid取得关注的人的帖子详细信息*/
 func GetPostDetail(uid uint, page int, pageSize int) (bool, _response.TotalRes) {
 	var realRes _response.TotalRes
-	isOk, postIdList := GetPostIdList(uid, page, pageSize)
-	if !isOk {
-		return false, realRes
+	pageNum := firstpage.QueryPageNum(uid)
+	if pageNum%pageSize == 0 {
+		realRes.Page = pageNum / pageSize
+	} else {
+		realRes.Page = pageNum/pageSize + 1
 	}
-	realRes.Page = Getpage(uid, pageSize)
-	var res []_response.ResPost = make([]_response.ResPost, len(postIdList))
-	index := 0
-	for _, value := range postIdList {
-		temp := firstpage.QueryDetailById(value)
-		temp.PID = value
+	var res = firstpage.QueryAllPostByUID(uid, page, pageSize)
+	for i := 0; i < len(res); i++ {
+		temp := res[i]
 		temp.Username = firstpage.QueryUsernameById(temp.UID)
-		//commentIdList := firstpage.QueryCommentIdById(value)
-		//var com []response.ResComment = make([]response.ResComment, len(commentIdList))
-		//cindex := 0
-		//for _, val := range commentIdList {
-		//	comment := firstpage.QueryCommentById(val)
-		//	com[cindex] = comment
-		//	cindex++
-		//}
-		//temp.Comment = com
-		res[index] = temp
-		index++
 	}
 	realRes.TotalPost = res
 	return true, realRes
