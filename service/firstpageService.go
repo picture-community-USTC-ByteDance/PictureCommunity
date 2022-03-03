@@ -43,6 +43,9 @@ func GetPostDetail(uid uint, page int, pageSize int) (bool, _response.TotalRes) 
 		res[i].Username = firstpage.QueryUsernameById(res[i].UID)
 	}
 	realRes.TotalPost = res
+	if len(res) == 0 {
+		return false, realRes
+	}
 	return true, realRes
 }
 
