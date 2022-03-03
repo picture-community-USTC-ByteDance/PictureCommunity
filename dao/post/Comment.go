@@ -50,9 +50,9 @@ func QueryNicknameAndProfile(userid uint) (nickname string, profile string) {
 
 //新添加一个评论，返回添加的这项数据
 func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, db.Comment) {
-
 	var com db.Comment
 	var re db.Comment
+
 	//先根据帖子id获取帖子，检查帖子是否存在
 	var posttemp db.Post
 	err := global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error

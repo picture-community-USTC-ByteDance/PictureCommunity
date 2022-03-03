@@ -40,8 +40,7 @@ func GetPostDetail(uid uint, page int, pageSize int) (bool, _response.TotalRes) 
 	}
 	var res = firstpage.QueryAllPostByUID(uid, page, pageSize)
 	for i := 0; i < len(res); i++ {
-		temp := res[i]
-		temp.Username = firstpage.QueryUsernameById(temp.UID)
+		res[i].Username = firstpage.QueryUsernameById(res[i].UID)
 	}
 	realRes.TotalPost = res
 	return true, realRes
