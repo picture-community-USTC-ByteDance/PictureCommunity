@@ -31,13 +31,45 @@ func QueryCommentService2(comment _request.QueryComment2) (error, []_response.Qu
 	totalpage := int(math.Ceil(float64(count) / float64(comment.PageSize)))
 	return err, back, totalpage
 }
-func CreateFirstLevelCommentService(comment _request.CreateFirstLevelComment, uid uint) (err error, back _response.CreateFirstLevelCommentBack) {
-	err, back = post.CreateFirstLevelCommentDAO(uid, comment.PID, comment.Content)
-	return
+func CreateFirstLevelCommentService(comment _request.CreateFirstLevelComment, uid uint) (error, _response.CreateCommentBack) {
+	err, backtemp := post.CreateFirstLevelCommentDAO(uid, comment.PID, comment.Content)
+	if err != nil {
+		return err, _response.CreateCommentBack{}
+	}
+	back := _response.CreateCommentBack{
+		CID:          backtemp.CID,
+		PostID:       backtemp.PostID,
+		ParentID:     backtemp.ParentID,
+		ChildNumber:  backtemp.ChildNumber,
+		Content:      backtemp.Content,
+		UserID:       backtemp.UserID,
+		LikeNumber:   backtemp.LikeNumber,
+		DeleteStatus: backtemp.DeleteStatus,
+		UpdateTime:   backtemp.UpdateTime,
+		CreateTime:   backtemp.CreateTime,
+	}
+	back.NickName, back.Profile = post.QueryNicknameAndProfile(backtemp.UserID)
+	return err, back
 }
-func CreateSecondLevelCommentService(comment _request.CreateSecondLevelComment, uid uint) (err error, back _response.CreateSecondLevelCommentBack) {
-	err, back = post.CreateSecondLevelCommentDAO(uid, comment.PID, comment.ParentId, comment.Content)
-	return
+func CreateSecondLevelCommentService(comment _request.CreateSecondLevelComment, uid uint) (error, _response.CreateCommentBack) {
+	err, backtemp := post.CreateSecondLevelCommentDAO(uid, comment.PID, comment.ParentId, comment.Content)
+	if err != nil {
+		return err, _response.CreateCommentBack{}
+	}
+	back := _response.CreateCommentBack{
+		CID:          backtemp.CID,
+		PostID:       backtemp.PostID,
+		ParentID:     backtemp.ParentID,
+		ChildNumber:  backtemp.ChildNumber,
+		Content:      backtemp.Content,
+		UserID:       backtemp.UserID,
+		LikeNumber:   backtemp.LikeNumber,
+		DeleteStatus: backtemp.DeleteStatus,
+		UpdateTime:   backtemp.UpdateTime,
+		CreateTime:   backtemp.CreateTime,
+	}
+	back.NickName, back.Profile = post.QueryNicknameAndProfile(backtemp.UserID)
+	return err, back
 }
 func DeleteCommentService(comment _request.DeleteComment) (err error, err_type int) {
 	err, err_type = post.DeleteCommentDAO(comment.CID)
