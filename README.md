@@ -6,7 +6,7 @@
 此项目为中国科学技术大学软件学院联合字节跳动的工程实践项目，仅作学习用途，不涉及任何商业用途。😄
 
 - [后端项目仓库](https://github.com/picture-community-USTC-ByteDance/PictureCommunity)
-  - v1版本 采用![](https://img.shields.io/badge/-golang-brightgreen)+![](https://img.shields.io/badge/-gin-brightgreen)+![](https://img.shields.io/badge/-gorm v2-brightgreen)+![](https://img.shields.io/badge/-mysql-brightgreen)
+  - v1版本 采用![](static/-golang-brightgreen)+![](https://img.shields.io/badge/-gin-brightgreen)+![](https://img.shields.io/badge/-gorm v2-brightgreen)+![](https://img.shields.io/badge/-mysql-brightgreen)
   - v2新增![](https://img.shields.io/badge/-redis-brightgreen)+![](https://img.shields.io/badge/-分布式zookeeper-brightgreen)+![](https://img.shields.io/badge/-oss存储-brightgreen)+![](https://img.shields.io/badge/-kafka-brightgreen)
 
 - [前端项目仓库](https://gitee.com/pseven7/image-community.git)
