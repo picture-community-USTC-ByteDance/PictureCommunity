@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"picture_community/controller"
 	"picture_community/global"
@@ -9,8 +10,11 @@ import (
 
 func RunSystemWithGIN() {
 	go controller.Manager.Start()
-	r := gin.Default()
-	global.GinEngine = r
+	app := gin.Default()
+	global.GinEngine = app
+
+	pprof.Register(app) //性能监控
+
 	router.SetRouter()
-	r.Run(":8080")
+	app.Run(":8080")
 }
