@@ -64,3 +64,16 @@ func GetSinglePost(c *gin.Context) {
 	post := service.GetSingleDetail(u.Pid, c)
 	response.Success(c, post, "获取成功")
 }
+func GetPossibleFriends(c *gin.Context) {
+	uid, exists := c.Get("uid")
+	if exists == false {
+		response.Fail(c, nil, "用户不存在！")
+	}
+	res := service.GetPossibleFriends(uid.(uint))
+	if len(res) == 0 {
+		response.Success(c, nil, "你已经关注了可能关注的所有人")
+	} else {
+		response.Success(c, res, "获取成功")
+	}
+
+}

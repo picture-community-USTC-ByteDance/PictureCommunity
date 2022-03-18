@@ -90,7 +90,7 @@ func SetRouter() {
 		m.GET("/getDetailList", middleware.AuthMiddleware, controller.GetDetailController) //根据ID获取关注的人的帖子信息
 		m.GET("/getDetail", middleware.AuthMiddleware, controller.GetSinglePost)           //根据帖子ID获取对应帖子详情
 	}
-
+	r.GET("/fake", middleware.AuthMiddleware, controller.GetPossibleFriends)
 	r.POST("/upload", middleware.AuthMiddleware, controller.FileUploadController)
 	r.StaticFS("/upload/pictures", http.Dir(global.FileStorageLocation))
 

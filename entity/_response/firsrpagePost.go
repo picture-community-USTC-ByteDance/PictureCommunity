@@ -33,3 +33,11 @@ type ResSinglePost struct {
 	Is_like     bool
 	Is_follow   bool
 }
+
+type ResPossibleFriends struct {
+	UID      uint
+	Username string
+	Nickname string
+	Profile  string
+	Motto    string
+}

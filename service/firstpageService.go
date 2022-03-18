@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/gin-gonic/gin"
+	"picture_community/cache"
 	"picture_community/dao/firstpage"
 	"picture_community/entity/_response"
 )
@@ -59,4 +60,7 @@ func GetSingleDetail(pid uint, c *gin.Context) _response.ResSinglePost {
 	post.Is_follow = firstpage.QueryIsFollowed(myUid.(uint), UidOfPost)
 	post.Is_like = firstpage.QueryIsLiked(pid, myUid.(uint))
 	return post
+}
+func GetPossibleFriends(uid uint) []_response.ResPossibleFriends {
+	return cache.GetPossiblefriends(uid)
 }

@@ -11,6 +11,8 @@ func main() {
 		fmt.Printf("database error : %v\n", err)
 		return
 	}
+	initialize.RedisDataBaseInit()
 	initialize.IdGeneratorInitialize()
 	initialize.RunSystemWithGIN()
+
 }

@@ -101,3 +101,13 @@ func QueryPageNum(uid uint) int {
 		Scan(&res)
 	return len(res)
 }
+
+// 根据username查其他用户的信息
+func QueryUserData(uid uint) _response.ResPossibleFriends {
+	var userdata _response.ResPossibleFriends
+	global.MysqlDB.Model(db.User{}).
+		Select("user.uid,nickname,user.username,profile,motto").
+		Joins("left join user_detail on user.uid = user_detail.uid").
+		Where("user.uid=?", uid).Scan(&userdata)
+	return userdata
+}
