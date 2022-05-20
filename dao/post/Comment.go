@@ -9,15 +9,15 @@ import (
 )
 
 //查询一级评论
-func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBackTemp, int64) {
-	var coms []_response.QueryCommentBackTemp
+func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_response.QueryCommentBack, int64) {
+	var coms []_response.QueryCommentBack
 	var count int64
 	//err := global.MysqlDB.Debug().
 	//	Model(&db.Comment{}).
 	//	Where("post_id = ? AND parent_id = 0", postid).Count(&count).
 	//	Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
 	err := global.MysqlDB.Table("comment").
-		Select("comment.c_id,comment.user_id,comment.nick_name,comment.profile,comment.content,comment.update_time,comment.like_number,comment.child_number,comment.like_status,user.username").
+		Select("comment.c_id,comment.user_id,comment.content,comment.update_time,comment.like_number,comment.child_number,user.username").
 		Joins("inner join user on user.uid = comment.user_id").Debug().
 		Where("post_id = ? AND parent_id = 0", postid).Count(&count).
 		Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
@@ -27,12 +27,11 @@ func QueryFirstCommentDAO(pagesize int, page int, postid uint) (error, []_respon
 }
 
 //查询二级评论
-func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBackTemp2, int64) {
-
-	var coms []_response.QueryCommentBackTemp2
+func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) (error, []_response.QueryCommentBack2, int64) {
+	var coms []_response.QueryCommentBack2
 	var count int64
 	err := global.MysqlDB.Table("comment").
-		Select("comment.c_id,comment.user_id,comment.nick_name,comment.profile,comment.content,comment.update_time,comment.like_number,comment.child_number,comment.like_status,comment.parent_id,user.username").
+		Select("comment.c_id,comment.user_id,comment.content,comment.update_time,comment.like_number,comment.child_number,comment.parent_id,user.username").
 		Joins("inner join user on user.uid = comment.user_id").Debug().
 		Where("post_id = ? AND parent_id = ?", postid, parent_id).Count(&count).
 		Offset((page - 1) * pagesize).Limit(pagesize).Find(&coms).Error
@@ -40,20 +39,23 @@ func QuerySecondCommentDAO(pagesize int, page int, postid uint, parent_id uint) 
 	fmt.Println(err)
 	return err, coms, count
 }
-
-func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, _response.CreateFirstLevelCommentBack) {
-	var tmp db.UserDetail
-	var com db.Comment
-	//根据id获取该用户的一些其他信息：昵称、头像
-	err := global.MysqlDB.First(&tmp, userid).Error
-	if err != nil {
-		return err, com
+func QueryNicknameAndProfile(userid uint) (nickname string, profile string) {
+	var t struct {
+		Nickname string
+		Profile  string
 	}
+	global.MysqlDB.Model(db.UserDetail{}).First(&t, userid)
+	return t.Nickname, t.Profile
+}
 
-	var re _response.CreateFirstLevelCommentBack
+//新添加一个评论，返回添加的这项数据
+func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error, db.Comment) {
+	var com db.Comment
+	var re db.Comment
+
 	//先根据帖子id获取帖子，检查帖子是否存在
 	var posttemp db.Post
-	err = global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error
+	err := global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error
 	if err != nil {
 		return err, re
 	}
@@ -68,8 +70,6 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	com.ChildNumber = 0
 	com.LikeNumber = 0
 	com.DeleteStatus = false
-	com.Profile = tmp.Profile
-	com.NickName = tmp.Nickname
 
 	result := global.MysqlDB.Create(&com)
 	err = result.Error
@@ -82,18 +82,14 @@ func CreateFirstLevelCommentDAO(userid uint, postid uint, content string) (error
 	return err, re
 }
 
-func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, _response.CreateSecondLevelCommentBack) {
-	var tmp db.UserDetail
+//新添加一个二级评论，返回添加的这项数据
+func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, content string) (error, db.Comment) {
 	var com db.Comment
-	//根据id获取该用户的一些其他信息：昵称、头像
-	err := global.MysqlDB.First(&tmp, userid).Error
-	if err != nil {
-		return err, com
-	}
+
 	//获取帖子
-	var re _response.CreateSecondLevelCommentBack
+	var re db.Comment
 	var posttemp db.Post
-	err = global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error
+	err := global.MysqlDB.Debug().Where("p_id = ?", postid).First(&posttemp).Error
 	if err != nil {
 		return err, re
 	}
@@ -113,8 +109,6 @@ func CreateSecondLevelCommentDAO(userid uint, postid uint, parentid uint, conten
 	com.ChildNumber = 0
 	com.LikeNumber = 0
 	com.DeleteStatus = false
-	com.Profile = tmp.Profile
-	com.NickName = tmp.Nickname
 
 	result := global.MysqlDB.Debug().Create(&com)
 	err = result.Error
