@@ -41,7 +41,7 @@ go run main.go
 
 ## 结构
 
-#### 目录结构
+### 目录结构
 
 ```
 PictureCommunity
@@ -66,11 +66,15 @@ PictureCommunity
 
 
 
+### 项目部署架构
+
+![image-20220520115355922](https://s2.loli.net/2022/05/20/Ap7mVjfcUhXuaPs.png)
+
+
+
 ### 后端架构（经典MVC）
 
 ![image-20220308155231926](static/20220308155231926.png)
-
-
 
 
 
@@ -90,7 +94,7 @@ PictureCommunity
 
 
 
-### 作者&联系
+## 作者&联系
 
 **中国科学技术大学软件学院2021级图片兴趣社区团队**
 
